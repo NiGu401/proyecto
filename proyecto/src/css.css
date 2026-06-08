@@ -1,0 +1,97 @@
+#header{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgb(194, 25, 25);
+}
+.logo {
+  height: 63px;
+  width: auto;
+  transition: height 0.3s ease;
+}
+#sep{
+    height: 100px;
+    background-color: #4b1414fa;
+}
+.icon{    
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    background: linear-gradient(90deg,rgb(255, 161, 161),white 1000px,rgb(255, 161, 161));
+    align-items: center;
+}
+#separatorup{
+    height: 10px;
+    background-color: #4b1414fa;
+}
+#separator-ribbon{
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}
+#separator-ribbon .content{
+    width: 150%;
+    height: 150px;
+    margin-left: -25%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+.bg-ribbon{
+    background-color: #e24843;
+}
+#boody{
+    background: rgb(255,255,255);
+    background: linear-gradient(90deg,rgb(243, 243, 219),white 1000px,rgb(243, 243, 219));
+    background-size: 100%;
+    margin-top: -20px;
+}
+.titulo{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 50px;
+    text-align: center
+    ;
+}
+.card-border{
+    margin-top: 30px;
+    border: solid 2px rgb(85, 48, 48);
+    height: 650px;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all ease-out 0.2s;
+    width: auto;
+}
+@media (max-width: 768px) {
+    .logo {
+        height: 25px;
+    }
+    #sep{
+        height: 60px;
+    }
+    .titulo{
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        font-size: 20px;
+        text-align: center; 
+    }   
+    #separator-ribbon .content{
+        height: 50px;
+    }
+    #separatorup{
+        height: 5px;
+    }
+}
+@media (max-width: 991px) {
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: rgb(220, 53, 69);
+    z-index: 1050;
+    padding: 15px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  }
+}
