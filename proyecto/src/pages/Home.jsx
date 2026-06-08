@@ -12,7 +12,7 @@ function Home() {
     <div>
        <div id='sep'>
        </div>
-       <div class="icon">
+       <div className="icon">
                 <center>
                     <img src="Imagenes/Logo.png" height="100%" width="80%"/>
                 </center>
@@ -20,11 +20,11 @@ function Home() {
         <div id="separatorup">
         </div>
         <div id="separator-ribbon">
-            <div class="content bg-ribbon"></div>
+            <div className="content bg-ribbon"></div>
         </div>
         <div id="boody">
-            <div class="container-md p-5">
-                <div class="titulo">
+            <div className="container-md p-5">
+                <div className="titulo">
                     Causita prestame 5 pavos
                 </div>
             </div>

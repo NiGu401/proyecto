@@ -1,8 +1,12 @@
 import { useState } from 'react'
-import { BrowserRouter, Route, Routes} from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
-import Contact from './pages/Contact'
-import About from './pages/About'
+import Comida from './pages/Comida'
+import Postres from './pages/Postres'
+import Login from './pages/Login'
+import Registro from './pages/Registro'
+import Dashboard from './pages/Dashboard'
+import ProtectedRoute from './pages/ProtectedRoute'
 import Header from './componentes/Header'
 
 function App() {
@@ -10,12 +14,19 @@ function App() {
 
   return (
     <>
-      <Header/>
       <BrowserRouter>
+        <Header />
         <Routes>
           <Route path='/' element={<Home/>}/>
-          <Route path='/Contact' element={<Contact/>}/>
-          <Route path='/About' element={<About/>}/>
+          <Route path='/comida' element={<Comida/>}/>
+          <Route path='/postres' element={<Postres/>}/>
+          <Route path='/login' element={<Login/>}/>
+          <Route path='/registro' element={<Registro/>}/>
+          <Route path='/dashboard' element={
+            <ProtectedRoute>
+              <Dashboard/>
+            </ProtectedRoute>
+          }/>
         </Routes>
       </BrowserRouter>
     </>
