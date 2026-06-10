@@ -93,7 +93,6 @@ function Login() {
         )}
 
         <div className="input-group">
-          <span className="input-icon">Correo</span>
           <input
             type="email"
             placeholder="Correo electrónico"
@@ -105,7 +104,6 @@ function Login() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">Contraseña</span>
           <input
             type="password"
             placeholder="Contraseña"
@@ -134,7 +132,6 @@ function Login() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">Código</span>
           <input
             type="text"
             placeholder="Ingrese el código de la imagen"

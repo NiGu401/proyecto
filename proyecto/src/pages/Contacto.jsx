@@ -70,10 +70,10 @@ function Contacto() {
   };
 
   const contactInfo = [
-    { icon: '📍', label: 'Ubicación', value: 'Av. Principal #123, Centro, Ciudad' },
-    { icon: 'Telefono', label: 'Teléfono', value: '(04) 222-3333' },
-    { icon: 'Email', label: 'Email', value: 'info@instantesdulces.com' },
-    { icon: '⏰', label: 'Horario', value: 'Lun-Sáb: 8am-8pm | Dom: 9am-5pm' },
+    { label: 'Ubicación', value: 'Av. Principal #123, Centro, Ciudad' },
+    { label: 'Teléfono', value: '(04) 222-3333' },
+    { label: 'Email', value: 'info@instantesdulces.com' },
+    { label: 'Horario', value: 'Lun-Sáb: 8am-8pm | Dom: 9am-5pm' },
   ];
 
   const socialLinks = [
