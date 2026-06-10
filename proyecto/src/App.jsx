@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
-import Inicio2 from './pages/Inicio2'
+import Inicio2 from './pages/index'
 import Comida from './pages/Comida'
 import Postres from './pages/Postres'
 import Menu from './pages/Menu'
