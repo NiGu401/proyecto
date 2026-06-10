@@ -305,7 +305,7 @@ function AdminPanel() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(20);
     doc.setTextColor(194, 25, 25);
-    doc.text('Instantes Dulces - Reporte', 105, 30, { align: 'center' });
+    doc.text('Pastelería de los Sabores - Reporte', 105, 30, { align: 'center' });
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
@@ -327,7 +327,7 @@ function AdminPanel() {
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(9);
     doc.setTextColor(150, 150, 150);
-    doc.text('Reporte generado automáticamente por Instantes Dulces', 105, 250, { align: 'center' });
+    doc.text('Reporte generado automáticamente por Pastelería de los Sabores', 105, 250, { align: 'center' });
     doc.save('reporte_admin.pdf');
     toast.success('PDF generado y descargado');
   };

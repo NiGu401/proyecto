@@ -17,7 +17,7 @@ function SobreNosotros() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(24);
     doc.setTextColor(194, 25, 25);
-    doc.text('Instantes Dulces - Nuestros Valores', 105, 30, { align: 'center' });
+    doc.text('Pastelería de los Sabores - Nuestros Valores', 105, 30, { align: 'center' });
     
     // Línea decorativa
     doc.setLineWidth(0.5);
@@ -33,7 +33,7 @@ function SobreNosotros() {
     doc.setFontSize(12);
     doc.setTextColor(80, 80, 80);
     const historia = [
-      'Desde 2024, Instantes Dulces nació del sueño de crear momentos',
+      'Desde 2024, Pastelería de los Sabores nació del sueño de crear momentos',
       'dulces que conectan a las personas. Cada producto que elaboramos',
       'lleva el amor y la dedicación de nuestro equipo de maestros',
       'pasteleros.',
@@ -122,7 +122,7 @@ function SobreNosotros() {
         <section className="sn-history">
           <h2 className="sn-section-title">Nuestra Historia</h2>
           <p className="sn-text">
-            Instantes Dulces comenzó como un pequeño emprendimiento familiar, con la visión de compartir 
+            Pastelería de los Sabores comenzó como un pequeño emprendimiento familiar, con la visión de compartir 
             los sabores de la repostería artesanal con toda la comunidad. Lo que comenzó como un sueño 
             en una cocina casera, hoy es una realidad que llena de sabor y alegría miles de hogares.
           </p>

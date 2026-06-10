@@ -1,4 +1,4 @@
-# 🍰 Instantes Dulces - Proyecto Web
+# 🍰 Pastelería de los Sabores - Proyecto Web
 
 ## Configuración de Desarrollo
 

@@ -20,7 +20,7 @@ function Inicio2() {
   const testimonials = [
     {
       nombre: 'Hola hola',
-      texto: '¡Los pasteles más deliciosos que he probado! Mi cumpleaños fue perfecto gracias a Instantes Dulces.',
+      texto: '¡Los pasteles más deliciosos que he probado! Mi cumpleaños fue perfecto gracias a Pastelería de los Sabores.',
       rating: 5,
     },
     {
@@ -30,7 +30,7 @@ function Inicio2() {
     },
     {
       nombre: 'Ana Martínez',
-      texto: 'Mi boda fue perfecta con las tartas de Instantes Dulces. ¡Superaron todas mis expectativas!',
+      texto: 'Mi boda fue perfecta con las tartas de Pastelería de los Sabores. ¡Superaron todas mis expectativas!',
       rating: 5,
     },
   ];
@@ -40,7 +40,7 @@ function Inicio2() {
       {/* Banner Principal */}
       <section className="hero-banner">
         <div className="hero-overlay">
-          <h1 className="hero-title">Bienvenidos a Instantes Dulces</h1>
+          <h1 className="hero-title">Bienvenidos a Pastelería de los Sabores</h1>
           <p className="hero-subtitle">Donde cada bocado es una experiencia inolvidable</p>
           <div className="hero-features">
             <div className="hero-feature">
@@ -66,7 +66,7 @@ function Inicio2() {
             <Col md={6}>
               <h2 className="about-title">Quiénes Somos</h2>
               <p className="about-text">
-                Desde 2024, Instantes Dulces ha sido sinónimo de calidad artesanal y pasión por la repostería. 
+                Desde 2024, Pastelería de los Sabores ha sido sinónimo de calidad artesanal y pasión por la repostería. 
                 Nuestros maestros pasteleros combinan técnicas tradicionales con sabores innovadores para crear 
                 momentos dulces que duran en la memoria de quienes los prueban.
               </p>
@@ -77,7 +77,7 @@ function Inicio2() {
             </Col>
             <Col md={6}>
               <div className="about-image-placeholder">
-                <img src="/Imagenes/Logo.png" alt="Instantes Dulces" />
+                <img src="/Imagenes/Logo.png" alt="Pastelería de los Sabores" />
               </div>
             </Col>
           </Row>

@@ -84,7 +84,7 @@ function Login() {
         <div className="logo-container">
           <span className="logo-icon">Panadería</span>
         </div>
-        <h1>Instantes Dulces</h1>
+        <h1>Pastelería de los Sabores</h1>
         <p>Inicie sesión para continuar</p>
 
         {error && (

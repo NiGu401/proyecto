@@ -21,7 +21,7 @@ app.use(express.json());
 // ==================== RUTAS ====================
 app.get("/", (req, res) => {
   res.json({
-    mensaje: "✅ API de Instantes Dulces funcionando correctamente",
+    mensaje: "✅ API de Pastelería de los Sabores funcionando correctamente",
     version: "1.0.0",
     endpoints: {
       auth: "/captcha, /login, /registro, /logout",
