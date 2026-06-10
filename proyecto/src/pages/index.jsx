@@ -53,13 +53,13 @@ function Inicio2() {
             </Carousel.Item>
             <Carousel.Item>
               <img
-                src="/Imagenes/delivery.jpg"
-                alt="Envío a Domicilio"
+                src="/Imagenes/cafe.jpg"
+                alt="Café y Bebidas"
                 className="carousel-full-width"
               />
               <div className="carousel-caption-hero">
-                <h2 className="hero-title">Envío a Domicilio</h2>
-                <p className="hero-subtitle">Recibe tus postres frescos en casa</p>
+                <h2 className="hero-title">Café y Bebidas</h2>
+                <p className="hero-subtitle">Disfruta de nuestro café y bebidas especiales</p>
               </div>
             </Carousel.Item>
             <Carousel.Item>
