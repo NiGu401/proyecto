@@ -42,20 +42,26 @@ function Inicio2() {
         <div className="hero-overlay">
           <h1 className="hero-title">Bienvenidos a Pastelería de los Sabores</h1>
           <p className="hero-subtitle">Donde cada bocado es una experiencia inolvidable</p>
-          <div className="hero-features">
-            <div className="hero-feature">
-              <span className="hero-icon">Tortas Personalizadas</span>
-              <span className="hero-label">Tartas Personalizadas</span>
-            </div>
-            <div className="hero-feature">
-              <span className="hero-icon">Envío a Domicilio</span>
-              <span className="hero-label">Envío a Domicilio</span>
-            </div>
-            <div className="hero-feature">
-              <span className="hero-icon">Ingredientes Naturales</span>
-              <span className="hero-label">Ingredientes Naturales</span>
-            </div>
-          </div>
+          <Carousel className="hero-carousel" prevLabel="" nextLabel="" pause="hover" interval={3000}>
+            <Carousel.Item>
+              <div className="hero-feature">
+                <span className="hero-icon">🎂</span>
+                <span className="hero-label">Tortas Personalizadas</span>
+              </div>
+            </Carousel.Item>
+            <Carousel.Item>
+              <div className="hero-feature">
+                <span className="hero-icon">🚚</span>
+                <span className="hero-label">Envío a Domicilio</span>
+              </div>
+            </Carousel.Item>
+            <Carousel.Item>
+              <div className="hero-feature">
+                <span className="hero-icon">🌿</span>
+                <span className="hero-label">Ingredientes Naturales</span>
+              </div>
+            </Carousel.Item>
+          </Carousel>
         </div>
       </section>
 
