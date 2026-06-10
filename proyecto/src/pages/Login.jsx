@@ -82,10 +82,9 @@ function Login() {
     <div className="login-container">
       <form className="login-card" onSubmit={iniciarSesion}>
         <div className="logo-container">
-          <span className="logo-icon">Panadería</span>
+          <img src="/Imagenes/Logo.png" alt="Logo" className="logo-icon" />
         </div>
-        <h1>Pastelería de los Sabores</h1>
-        <p>Inicie sesión para continuar</p>
+        <p className="login-subtitle">Inicie sesión para continuar</p>
 
         {error && (
           <div className="error-message">

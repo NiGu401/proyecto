@@ -17,8 +17,9 @@
 }
 
 .logo-icon {
-  font-size: 42px;
-  color: rgb(194, 25, 25);
+  max-width: 200px;
+  height: auto;
+  margin: 0 auto;
 }
 #sep{
     height: 100px;

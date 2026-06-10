@@ -102,10 +102,9 @@ function Registro() {
     <div className="login-container">
       <form className="login-card registro-card" onSubmit={handleSubmit}>
         <div className="logo-container">
-          <span className="logo-icon">Panadería</span>
+          <img src="/Imagenes/Logo.png" alt="Logo" className="logo-icon" />
         </div>
-        <h1>Registro de Usuario</h1>
-        <p>Crea una cuenta para acceder al sistema</p>
+        <p className="login-subtitle">Crea una cuenta para acceder al sistema</p>
 
         {error && <div className="error-message">{error}</div>}
         {exito && <div className="success-message">{exito}</div>}
