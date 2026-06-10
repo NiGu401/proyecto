@@ -19,8 +19,8 @@ function Inicio2() {
 
   const testimonials = [
     {
-      nombre: 'Hola hola',
-      texto: '¡Los pasteles más deliciosos que he probado! Mi cumpleaños fue perfecto gracias a Pastelería de los Sabores.',
+      nombre: 'Luis Fabricio Arratia Villa 🤬🤬🤬🤬',
+      texto: 'Critica dura a esta pagina 😒muy alto los costos iniciales nomas queria entrar al baño y me cobraron mucho no lo recomiendo la verdad, ese pinguino me irrita bastante ojala tenga una buena navidad gracias perdon .',
       rating: 5,
     },
     {
