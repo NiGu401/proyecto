@@ -42,19 +42,6 @@ conexion.connect((err) => {
   });
 
   conexion.query(`
-    CREATE TABLE IF NOT EXISTS pedidos (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      cliente VARCHAR(100) NOT NULL,
-      productos TEXT NOT NULL,
-      total DECIMAL(10,2) NOT NULL,
-      estado VARCHAR(20) DEFAULT 'pendiente',
-      fecha DATE
-    )
-  `, (err) => {
-    if (err) console.error("Error creando pedidos:", err.message);
-  });
-
-  conexion.query(`
     CREATE TABLE IF NOT EXISTS reservas (
       id INT AUTO_INCREMENT PRIMARY KEY,
       tipo_torta VARCHAR(100) NOT NULL,

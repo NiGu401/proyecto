@@ -77,7 +77,6 @@ function Header() {
             <Navbar.Collapse id="menu-navegacion">
               <Nav className="ms-auto d-flex flex-colum flex-lg-row">
                 <Nav.Link onClick={() => navigate('/')} className='px-3'>Inicio</Nav.Link>
-                <Nav.Link onClick={() => navigate('/menu')} className='px-3'>Menú</Nav.Link>
                 <Nav.Link onClick={() => navigate('/agenda-eventos')} className='px-3'>Agenda y Eventos</Nav.Link>
 
                 <Nav.Link onClick={() => navigate('/contacto')} className='px-3'>Contacto</Nav.Link>
@@ -89,8 +88,8 @@ function Header() {
                       </Nav.Link>
                       {showDropdown && (
                         <div className="dropdown-menu">
-                          <div className="dropdown-item" onClick={() => { navigate('/menu'); setShowDropdown(false); }}>
-                            Usuario
+                          <div className="dropdown-item" onClick={() => { navigate('/postres'); setShowDropdown(false); }}>
+                            Postres
                           </div>
                           {isAdmin && (
                             <div className="dropdown-item" onClick={() => { navigate('/admin-panel'); setShowDropdown(false); }}>

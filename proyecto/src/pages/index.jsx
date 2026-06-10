@@ -123,18 +123,6 @@ function Inicio2() {
         </Container>
       </section>
 
-      {/* Pedir Ahora */}
-      <section className="pedir-section">
-        <Container>
-          <h2 className="pedir-title">¿Listo para endulzar tu día?</h2>
-          <p className="pedir-subtitle">Haz tu pedido ahora y recibe tus postres favoritos en minutos</p>
-          <div className="pedir-buttons">
-            <Button variant="danger" size="lg" onClick={() => window.location.href = '/menu'}>
-            Pedir Ahora
-            </Button>
-          </div>
-        </Container>
-      </section>
 
       {/* Testimonios */}
       <section className="testimonials-section">

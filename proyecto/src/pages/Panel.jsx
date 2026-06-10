@@ -11,7 +11,6 @@ function Panel() {
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
-    pedidos: 0,
     productos: 0,
     reservas: 0,
     contactos: 0,
@@ -35,21 +34,18 @@ function Panel() {
   const loadStats = async () => {
     try {
       // Cargar todas las métricas en paralelo
-      const [pedidosRes, productosRes, reservasRes, contactosRes] =
+      const [productosRes, reservasRes, contactosRes] =
         await Promise.all([
-          fetch(`${API_URL}/api/pedidos`),
           fetch(`${API_URL}/api/productos`),
           fetch(`${API_URL}/api/reservas`),
           fetch(`${API_URL}/api/contactos`),
         ]);
 
-      const pedidos = await pedidosRes.json();
       const productos = await productosRes.json();
       const reservas = await reservasRes.json();
       const contactos = await contactosRes.json();
 
       setStats({
-        pedidos: pedidos.pedidos?.length || 0,
         productos: productos.productos?.length || 0,
         reservas: reservas.reservas?.length || 0,
         contactos: contactos.contactos?.length || 0,
@@ -126,16 +122,7 @@ function Panel() {
           <>
             {/* Tarjetas de métricas */}
             <Row className="mb-4">
-              <Col md={3}>
-                <Card className="h-100 text-center border-danger">
-                  <Card.Body>
-                    <Card.Title className="text-danger">Pedidos</Card.Title>
-                    <h2 className="text-danger">{stats.pedidos}</h2>
-                    <Card.Text>Total de pedidos</Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col md={3}>
+              <Col md={4}>
                 <Card className="h-100 text-center border-warning">
                   <Card.Body>
                     <Card.Title className="text-warning">Reservas</Card.Title>
@@ -144,7 +131,7 @@ function Panel() {
                   </Card.Body>
                 </Card>
               </Col>
-              <Col md={3}>
+              <Col md={4}>
                 <Card className="h-100 text-center border-info">
                   <Card.Body>
                     <Card.Title className="text-info">Contactos</Card.Title>
@@ -238,12 +225,7 @@ function Panel() {
                           <span className="fw-bold text-danger">{stats.contactosSinLeer}</span>
                         </div>
                       </ListGroup.Item>
-                      <ListGroup.Item>
-                        <div className="d-flex justify-content-between">
-                          <span>Pedidos totales:</span>
-                          <span className="fw-bold">{stats.pedidos}</span>
-                        </div>
-                      </ListGroup.Item>
+
                     </ListGroup>
                   </Card.Body>
                 </Card>

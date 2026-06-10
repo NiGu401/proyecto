@@ -2,11 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 
 import Inicio2 from './pages/index'
-
 import Postres from './pages/Postres'
-import Menu from './pages/Menu'
-
-
 import AgendaEventos from './pages/AgendaEventos'
 
 import Contacto from './pages/Contacto'
@@ -28,7 +24,6 @@ function App() {
           <Route path='/' element={<Inicio2/>}/>
           
           <Route path='/postres' element={<Postres/>}/>
-          <Route path='/menu' element={<Menu/>}/>
 
 
           <Route path='/agenda-eventos' element={<AgendaEventos/>}/>

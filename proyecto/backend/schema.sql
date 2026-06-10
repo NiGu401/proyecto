@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS logs_acceso;
 DROP TABLE IF EXISTS productos;
 DROP TABLE IF EXISTS mensajes_contacto;
 DROP TABLE IF EXISTS reservas;
-DROP TABLE IF EXISTS pedidos;
 DROP TABLE IF EXISTS usuarios;
 DROP TABLE IF EXISTS roles;
 
@@ -27,16 +26,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
     rol_id INT DEFAULT 2,
     estado INT DEFAULT 1,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Tabla de pedidos
-CREATE TABLE IF NOT EXISTS pedidos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    cliente VARCHAR(100) NOT NULL,
-    productos TEXT NOT NULL,
-    total DECIMAL(10,2) NOT NULL,
-    estado VARCHAR(20) DEFAULT 'pendiente',
-    fecha DATE
 );
 
 -- Tabla de reservas
