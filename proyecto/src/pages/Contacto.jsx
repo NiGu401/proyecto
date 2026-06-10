@@ -76,13 +76,6 @@ function Contacto() {
     { label: 'Horario', value: 'Lun-Sáb: 8am-8pm | Dom: 9am-5pm' },
   ];
 
-  const socialLinks = [
-    { icon: '📸', name: 'Instagram', link: '#', text: '@instantesdulces' },
-    { icon: '👍', name: 'Facebook', link: '#', text: '/instantesdulces' },
-    { icon: '🐦', name: 'Twitter', link: '#', text: '@instantesdulces' },
-    { icon: '📱', name: 'WhatsApp', link: '#', text: '+504 000-0000' },
-  ];
-
   return (
     <div className="contacto-container">
       <ToastContainer />
@@ -112,27 +105,18 @@ function Contacto() {
                   ))}
                 </div>
 
-                {/* Redes sociales */}
-                <div className="social-links">
-                  <h4 className="social-title">Síguenos</h4>
-                  <div className="social-grid">
-                    {socialLinks.map((link, i) => (
-                      <a key={i} href={link.link} className="social-link" target="_blank" rel="noopener noreferrer">
-                        <span className="social-icon">{link.icon}</span>
-                        <span className="social-name">{link.name}</span>
-                        <span className="social-handle">{link.text}</span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Mapa placeholder */}
-                <div className="map-placeholder">
-                  <div className="map-center">
-                    <span className="map-icon">🗺️</span>
-                    <p>Mapa de ubicación</p>
-                    <p className="map-hint">Av. Principal #123, Centro</p>
-                  </div>
+                {/* Mapa de Google Maps */}
+                <div className="map-embed">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!4v1781099726623!6m8!1m7!1sDIPNM78KfF_xpA6noX8CjQ!2m2!1d-16.49103445451797!2d-68.16475771238056!3f324.2813441352296!4f-22.953761112764184!5f0.7820865974627469"
+                    width="100%"
+                    height="450"
+                    style={{ border: 0 }}
+                    allowFullScreen={true}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Mapa de ubicación"
+                  ></iframe>
                 </div>
               </Card.Body>
             </Card>

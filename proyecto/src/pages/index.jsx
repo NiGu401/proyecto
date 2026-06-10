@@ -39,30 +39,41 @@ function Inicio2() {
     <div className="inicio2-container">
       {/* Banner Principal */}
       <section className="hero-banner">
-        <div className="hero-overlay">
-          <h1 className="hero-title">Bienvenidos a Pastelería de los Sabores</h1>
-          <p className="hero-subtitle">Donde cada bocado es una experiencia inolvidable</p>
-          <Carousel className="hero-carousel" prevLabel="" nextLabel="" pause="hover" interval={3000}>
+        <Carousel className="hero-carousel" prevLabel="" nextLabel="" pause="hover" interval={3000}>
             <Carousel.Item>
-              <div className="hero-feature">
-                <span className="hero-icon">🎂</span>
-                <span className="hero-label">Tortas Personalizadas</span>
+              <img
+                src="/Imagenes/pasteles.jpg"
+                alt="Tortas Personalizadas"
+                className="carousel-full-width"
+              />
+              <div className="carousel-caption-hero">
+                <h2 className="hero-title">Tortas Personalizadas</h2>
+                <p className="hero-subtitle">Diseñamos la torta de tus sueños</p>
               </div>
             </Carousel.Item>
             <Carousel.Item>
-              <div className="hero-feature">
-                <span className="hero-icon">🚚</span>
-                <span className="hero-label">Envío a Domicilio</span>
+              <img
+                src="/Imagenes/delivery.jpg"
+                alt="Envío a Domicilio"
+                className="carousel-full-width"
+              />
+              <div className="carousel-caption-hero">
+                <h2 className="hero-title">Envío a Domicilio</h2>
+                <p className="hero-subtitle">Recibe tus postres frescos en casa</p>
               </div>
             </Carousel.Item>
             <Carousel.Item>
-              <div className="hero-feature">
-                <span className="hero-icon">🌿</span>
-                <span className="hero-label">Ingredientes Naturales</span>
+              <img
+                src="/Imagenes/ingredientes.jpg"
+                alt="Ingredientes Naturales"
+                className="carousel-full-width"
+              />
+              <div className="carousel-caption-hero">
+                <h2 className="hero-title">Ingredientes Naturales</h2>
+                <p className="hero-subtitle">Lo mejor y más fresco para tus postres</p>
               </div>
             </Carousel.Item>
           </Carousel>
-        </div>
       </section>
 
       {/* Quiénes Somos */}
@@ -136,7 +147,7 @@ function Inicio2() {
                   <Card.Body>
                     <div className="testimonial-stars">
                       {[...Array(t.rating)].map((_, j) => (
-                        <span key={j} className="star">Estrella</span>
+                        <span key={j} className="star">⭐</span>
                       ))}
                     </div>
                     <p className="testimonial-text">"{t.texto}"</p>
