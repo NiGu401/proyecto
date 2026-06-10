@@ -42,7 +42,7 @@ function Inicio2() {
         <Carousel className="hero-carousel" prevLabel="" nextLabel="" pause="hover" interval={3000}>
             <Carousel.Item>
               <img
-                src="/Imagenes/pasteles.jpg"
+                src="/Imagenes/carrucel1.jpg"
                 alt="Tortas Personalizadas"
                 className="carousel-full-width"
               />
@@ -53,7 +53,7 @@ function Inicio2() {
             </Carousel.Item>
             <Carousel.Item>
               <img
-                src="/Imagenes/cafe.jpg"
+                src="/Imagenes/carrucel2.jpg"
                 alt="Café y Bebidas"
                 className="carousel-full-width"
               />
@@ -64,7 +64,7 @@ function Inicio2() {
             </Carousel.Item>
             <Carousel.Item>
               <img
-                src="/Imagenes/ingredientes.jpg"
+                src="/Imagenes/carrucel3.jpg"
                 alt="Ingredientes Naturales"
                 className="carousel-full-width"
               />
