@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -9,40 +9,41 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../css.css';
 
+const API_URL = '';
+
+const CATEGORIES_MAP = {
+  pasteles: ['Pasteles', 'Tortas', 'Pasteles de Chocolate', 'Pasteles de Vainilla'],
+  reposteria: ['Repostería', 'Cupcakes', 'Galletas', 'Brownies'],
+  cafeteria: ['Cafetería', 'Café', 'Té', 'Bebidas'],
+  combos: ['Combos', 'Parejas', 'Packs'],
+};
+
 function Menu() {
   const [activeTab, setActiveTab] = useState('pasteles');
   const [cart, setCart] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const products = {
-    pasteles: [
-      { id: 1, name: 'Pastel de Chocolate', price: 35, desc: 'Exquisito pastel de chocolate con ganache', img: '/Imagenes/pasteldechoco.jpg' },
-      { id: 2, name: 'Tarta de Fresas', price: 40, desc: 'Tarta con fresas naturales y crema chantilly', img: '/Imagenes/tartadefresas.jfif' },
-      { id: 3, name: 'Tarta de Bodas (3 pisos)', price: 150, desc: 'Perfecta para momentos especiales', img: '/Imagenes/tartadebodas.jfif' },
-      { id: 4, name: 'Pastel de Vainilla', price: 30, desc: 'Clásico pastel de vainilla con frosting', img: '/Imagenes/pasteldevaini.jfif' },
-    ],
-    reposteria: [
-      { id: 5, name: 'Cupcake Vainilla', price: 3, desc: 'Cupcake con frosting de vainilla', img: '/Imagenes/cupcake.jpg' },
-      { id: 6, name: 'Cheesecake Arándanos', price: 5, desc: 'Cheesecake cremoso con arándanos', img: '/Imagenes/chessecake.jfif' },
-      { id: 7, name: 'Galletas de Chocolate', price: 2, desc: 'Galletas crujientes con chips de chocolate', img: '/Imagenes/galletas.jpg' },
-      { id: 8, name: 'Brownies', price: 2, desc: 'Brownies densos de chocolate', img: '/Imagenes/brownie.jpg' },
-    ],
-    cafeteria: [
-      { id: 9, name: 'Espresso Doble', price: 4, desc: 'Café espresso intenso y aromático', img: '/Imagenes/picho.jfif' },
-      { id: 10, name: 'Café de Grano', price: 5, desc: 'Café premium de grano selecto', img: '/Imagenes/cafe.jpg' },
-      { id: 11, name: 'Té Matcha Latte', price: 6, desc: 'Matcha japonés con leche cremosa', img: '/Imagenes/tematcha.jpg' },
-      { id: 12, name: 'Té Infusionado', price: 4, desc: 'Selección de tés orgánicos', img: '/Imagenes/teinfucionado.jpg' },
-    ],
-    combos: [
-      { id: 13, name: 'Café + Cookie', price: 6, desc: 'Espresso doble con galleta de chocolate', img: '/Imagenes/cafecookie.jpg' },
-      { id: 14, name: 'Sándwich + Té', price: 8, desc: 'Sándwich artesanal con té infusionado', img: '/Imagenes/tesan.jpeg' },
-      { id: 15, name: 'Cupcake + Cappuccino', price: 8, desc: 'Cupcake de chocolate con cappuccino', img: '/Imagenes/cupcapu.PNG' },
-      { id: 16, name: 'Combo Familiar', price: 45, desc: 'Pastel individual para 4 personas + bebidas', img: '/Imagenes/pasteles.jfif' },
-    ],
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/productos`);
+      const data = await response.json();
+      if (data.productos) {
+        setAllProducts(data.productos);
+      }
+    } catch (error) {
+      console.error('Error al cargar productos:', error);
+    }
+    setLoading(false);
   };
 
   const addToCart = (product) => {
     setCart([...cart, { ...product, quantity: 1 }]);
-    toast.success(`${product.name} agregado al carrito`);
+    toast.success(`${product.nombre} agregado al carrito`);
   };
 
   const tabLabels = {
@@ -51,6 +52,19 @@ function Menu() {
     cafeteria: 'Cafetería y Té',
     combos: 'Combos y Parejas',
   };
+
+  const getFilteredProducts = () => {
+    const keywords = CATEGORIES_MAP[activeTab] || [];
+    return allProducts.filter((p) => {
+      const isActive = p.activo === 1 || p.activo === true;
+      const isCategory = keywords.some((k) =>
+        p.categoria && p.categoria.toLowerCase().includes(k.toLowerCase())
+      );
+      return isActive && isCategory;
+    });
+  };
+
+  const filteredProducts = getFilteredProducts();
 
   return (
     <div className="menu-container">
@@ -65,7 +79,7 @@ function Menu() {
       <Container>
         {/* Tabs de Categorías */}
         <Nav className="menu-tabs" variant="pills" activeKey={activeTab} onSelect={setActiveTab}>
-          {Object.keys(products).map((key) => (
+          {Object.keys(tabLabels).map((key) => (
             <Nav.Item key={key}>
               <Nav.Link eventKey={key} onClick={() => setActiveTab(key)}>
                 {tabLabels[key]}
@@ -75,25 +89,30 @@ function Menu() {
         </Nav>
 
         {/* Productos */}
-        <Row className="products-grid mt-4">
-          {products[activeTab].map((product) => (
-            <Col key={product.id} md={3} sm={6} className="mb-4">
-              <Card className="product-card h-100">
-                <Card.Img variant="top" className="product-img" src={product.img} />
-                <Card.Body>
-                  <Card.Title>{product.name}</Card.Title>
-                  <Card.Text>{product.desc}</Card.Text>
-                  <div className="product-price">${product.price}</div>
-                  <div className="product-actions">
-                    <Button size="sm" variant="danger" onClick={() => addToCart(product)}>
-                      Agregar
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+        {loading ? (
+          <p className="text-center mt-5">⏳ Cargando productos...</p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-center mt-5">No hay productos disponibles en esta categoría</p>
+        ) : (
+          <Row className="products-grid mt-4">
+            {filteredProducts.map((product) => (
+              <Col key={product.id} md={3} sm={6} className="mb-4">
+                <Card className="product-card h-100">
+                  <Card.Img variant="top" className="product-img" src="/Imagenes/Logo.png" />
+                  <Card.Body>
+                    <Card.Title>{product.nombre}</Card.Title>
+                    <div className="product-price">${parseFloat(product.precio).toFixed(2)}</div>
+                    <div className="product-actions">
+                      <Button size="sm" variant="danger" onClick={() => addToCart(product)}>
+                        Agregar
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
       </Container>
     </div>
   );

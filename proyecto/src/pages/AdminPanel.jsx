@@ -350,7 +350,7 @@ function AdminPanel() {
     nombre: '',
     correo: '',
     precio: '',
-    categoria: '',
+    categoria: 'Pasteles',
     activo: true,
   });
 
@@ -792,11 +792,15 @@ function AdminPanel() {
             <Form.Group className="mb-3" controlId="productCategory">
               <Form.Label>Categoría</Form.Label>
               <Form.Control
-                type="text"
-                value={formData.categoria}
+                as="select"
+                value={formData.categoria || 'Pasteles'}
                 onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                placeholder="Pasteles, Repostería, etc."
-              />
+              >
+                <option value="Pasteles">Pasteles</option>
+                <option value="Repostería">Repostería</option>
+                <option value="Cafetería">Cafetería</option>
+                <option value="Combos">Combos</option>
+              </Form.Control>
             </Form.Group>
             <Form.Group className="mb-3" controlId="productActive">
               <Form.Check

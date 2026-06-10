@@ -79,9 +79,9 @@ function Header() {
                 <Nav.Link onClick={() => navigate('/')} className='px-3'>Inicio</Nav.Link>
                 <Nav.Link onClick={() => navigate('/menu')} className='px-3'>Menú</Nav.Link>
                 <Nav.Link onClick={() => navigate('/pedidos')} className='px-3'>Pedir Online</Nav.Link>
-                <Nav.Link onClick={() => navigate('/sobre-nosotros')} className='px-3'>Sobre Nosotros</Nav.Link>
+
                 <Nav.Link onClick={() => navigate('/agenda-eventos')} className='px-3'>Agenda y Eventos</Nav.Link>
-                <Nav.Link onClick={() => navigate('/blog-recetas')} className='px-3'>Blog</Nav.Link>
+
                 <Nav.Link onClick={() => navigate('/contacto')} className='px-3'>Contacto</Nav.Link>
                 {usuario && (
                   <>

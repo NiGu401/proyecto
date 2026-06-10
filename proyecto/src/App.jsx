@@ -6,9 +6,9 @@ import Comida from './pages/Comida'
 import Postres from './pages/Postres'
 import Menu from './pages/Menu'
 import Pedidos from './pages/Pedidos'
-import SobreNosotros from './pages/SobreNosotros'
+
 import AgendaEventos from './pages/AgendaEventos'
-import BlogRecetas from './pages/BlogRecetas'
+
 import Contacto from './pages/Contacto'
 import AdminPanel from './pages/AdminPanel'
 import Login from './pages/Login'
@@ -31,9 +31,9 @@ function App() {
           <Route path='/postres' element={<Postres/>}/>
           <Route path='/menu' element={<Menu/>}/>
           <Route path='/pedidos' element={<Pedidos/>}/>
-          <Route path='/sobre-nosotros' element={<SobreNosotros/>}/>
+
           <Route path='/agenda-eventos' element={<AgendaEventos/>}/>
-          <Route path='/blog-recetas' element={<BlogRecetas/>}/>
+
           <Route path='/contacto' element={<Contacto/>}/>
           <Route path='/admin-panel' element={
             <ProtectedRoute requireAdmin={true}>

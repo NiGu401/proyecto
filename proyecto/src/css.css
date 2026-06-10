@@ -536,6 +536,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 25px;
+  justify-content: center;
 }
 
 .product-card {
