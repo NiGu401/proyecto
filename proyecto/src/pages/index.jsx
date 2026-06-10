@@ -5,22 +5,13 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Carousel from 'react-bootstrap/Carousel';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import '../css.css';
 
 function Inicio2() {
-  const [chartData, setChartData] = useState([
-    { producto: 'Pastel Chocolate', ventas: 45 },
-    { producto: 'Cupcake Vainilla', ventas: 38 },
-    { producto: 'Cheesecake', ventas: 32 },
-    { producto: 'Galletas', ventas: 28 },
-    { producto: 'Tarta Fresas', ventas: 22 },
-  ]);
-
   const testimonials = [
     {
-      nombre: 'Luis Fabricio Arratia Villa 🤬🤬🤬🤬',
-      texto: 'Critica dura a esta pagina 😒muy alto los costos iniciales nomas queria entrar al baño y me cobraron mucho no lo recomiendo la verdad, ese pinguino me irrita bastante ojala tenga una buena navidad gracias perdon .',
+      nombre: 'Luis Fabricio Arratia Villa',
+      texto: 'Critica dura a esta pagina muy alto los costos iniciales nomas queria entrar al baño y me cobraron mucho no lo recomiendo la verdad, ese pinguino me irrita bastante ojala tenga una buena navidad gracias perdon.',
       rating: 5,
     },
     {
@@ -33,6 +24,18 @@ function Inicio2() {
       texto: 'Mi boda fue perfecta con las tartas de Pastelería de los Sabores. ¡Superaron todas mis expectativas!',
       rating: 5,
     },
+  ];
+
+  const galeria = [
+    { src: '/Imagenes/brownie.jpg', alt: 'Brownies', desc: 'Brownies caseros' },
+    { src: '/Imagenes/pasteldechoco.jpg', alt: 'Pastel de Chocolate', desc: 'Pastel de Chocolate' },
+    { src: '/Imagenes/pasteldevaini.jfif', alt: 'Pastel de Vainilla', desc: 'Pastel de Vainilla' },
+    { src: '/Imagenes/chessecake.jfif', alt: 'Cheesecake', desc: 'Cheesecake' },
+    { src: '/Imagenes/cupcake.jpg', alt: 'Cupcake', desc: 'Cupcake' },
+    { src: '/Imagenes/tartadefresas.jfif', alt: 'Tarta de Fresas', desc: 'Tarta de Fresas' },
+    { src: '/Imagenes/galletas.jpg', alt: 'Galletas', desc: 'Galletas' },
+    { src: '/Imagenes/tartadebodas.jfif', alt: 'Tarta de Bodas', desc: 'Tarta de Bodas' },
+    { src: '/Imagenes/pasteles.jfif', alt: 'Pasteles', desc: 'Pasteles' },
   ];
 
   return (
@@ -101,6 +104,25 @@ function Inicio2() {
         </Container>
       </section>
 
+      {/* Galería */}
+      <section className="gallery-section" style={{ padding: '4rem 0', backgroundColor: '#f8f9fa' }}>
+        <Container>
+          <h2 className="text-center mb-4" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C21919' }}>Nuestros Productos</h2>
+          <Row>
+            {galeria.map((img, i) => (
+              <Col key={i} md={4} className="mb-4">
+                <Card className="h-100 shadow-sm">
+                  <Card.Img variant="top" src={img.src} className="product-gallery-img" style={{ height: '200px', objectFit: 'cover' }} />
+                  <Card.Body className="text-center">
+                    <Card.Title style={{ fontSize: '1.1rem' }}>{img.desc}</Card.Title>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
+
       {/* Pedir Ahora */}
       <section className="pedir-section">
         <Container>
@@ -108,30 +130,8 @@ function Inicio2() {
           <p className="pedir-subtitle">Haz tu pedido ahora y recibe tus postres favoritos en minutos</p>
           <div className="pedir-buttons">
             <Button variant="danger" size="lg" onClick={() => window.location.href = '/menu'}>
-            Ir al Menú
-            </Button>
-            <Button variant="outline-danger" size="lg" onClick={() => window.location.href = '/pedidos'}>
             Pedir Ahora
             </Button>
-          </div>
-        </Container>
-      </section>
-
-      {/* Gráfico Estadístico */}
-      <section className="chart-section">
-        <Container>
-          <h2 className="chart-title">Postres Más Vendidos Este Mes</h2>
-          <div className="chart-container">
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="producto" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="ventas" fill="#C21919" name="Ventas" />
-              </BarChart>
-            </ResponsiveContainer>
           </div>
         </Container>
       </section>

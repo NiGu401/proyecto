@@ -23,10 +23,10 @@ function ProtectedRoute({ children, requireAdmin = false }) {
         if (hasAdmin) {
           setIsAuthorized(true);
         } else {
-          // No es admin, redirigir al dashboard
+          // No es admin, redirigir al menu
           setAuthChecked(true);
           setIsAuthorized(false);
-          window.location.href = "/dashboard";
+          window.location.href = "/menu";
         }
       } else {
         setIsAuthorized(true);
@@ -43,7 +43,7 @@ function ProtectedRoute({ children, requireAdmin = false }) {
   }
 
   if (!isAuthorized) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/menu" />;
   }
 
   return children;

@@ -78,8 +78,6 @@ function Header() {
               <Nav className="ms-auto d-flex flex-colum flex-lg-row">
                 <Nav.Link onClick={() => navigate('/')} className='px-3'>Inicio</Nav.Link>
                 <Nav.Link onClick={() => navigate('/menu')} className='px-3'>Menú</Nav.Link>
-                <Nav.Link onClick={() => navigate('/pedidos')} className='px-3'>Pedir Online</Nav.Link>
-
                 <Nav.Link onClick={() => navigate('/agenda-eventos')} className='px-3'>Agenda y Eventos</Nav.Link>
 
                 <Nav.Link onClick={() => navigate('/contacto')} className='px-3'>Contacto</Nav.Link>
@@ -87,13 +85,12 @@ function Header() {
                   <>
                     <Nav.Item className="dropdown position-relative">
                       <Nav.Link className='px-3' onClick={() => setShowDropdown(!showDropdown)}>
-                        {usuario.nombre}{' '}
-                        <span className="dropdown-arrow">▼</span>
+                        {usuario.nombre}
                       </Nav.Link>
                       {showDropdown && (
                         <div className="dropdown-menu">
-                          <div className="dropdown-item" onClick={() => { navigate('/dashboard'); setShowDropdown(false); }}>
-                            Dashboard
+                          <div className="dropdown-item" onClick={() => { navigate('/menu'); setShowDropdown(false); }}>
+                            Usuario
                           </div>
                           {isAdmin && (
                             <div className="dropdown-item" onClick={() => { navigate('/admin-panel'); setShowDropdown(false); }}>
@@ -125,7 +122,7 @@ function Header() {
                           onMouseEnter={(e) => e.target.style.background = '#0b5abf'}
                           onMouseLeave={(e) => e.target.style.background = '#0D6EFD'}
                         >
-                          Dashboard
+                          Panel
                         </button>
                       </Nav.Item>
                     )}

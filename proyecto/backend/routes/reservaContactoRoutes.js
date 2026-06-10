@@ -110,7 +110,7 @@ router.put("/api/reserva/:id", (req, res) => {
 router.delete("/api/reserva/:id", (req, res) => {
   const { id } = req.params;
 
-  const sql = `UPDATE reservas SET estado = 'eliminada' WHERE id = ?`;
+  const sql = `DELETE FROM reservas WHERE id = ?`;
 
   db.query(sql, [id], (error) => {
     if (error) {
@@ -119,7 +119,7 @@ router.delete("/api/reserva/:id", (req, res) => {
         error: error.message,
       });
     }
-    res.json({ mensaje: "✅ Reserva eliminada (eliminación lógica)" });
+    res.json({ mensaje: "✅ Reserva eliminada" });
   });
 });
 
@@ -267,11 +267,23 @@ router.delete("/api/pedido/:id", (req, res) => {
 });
 
 // ============================================================
+// TOP 5 PRODUCTOS MÁS VENDIDOS
+// ============================================================
+
+router.get("/api/top5-vendidos", (req, res) => {
+  const sql = `SELECT producto_nombre, SUM(cantidad) AS total_ventas FROM ventas GROUP BY producto_nombre ORDER BY total_ventas DESC LIMIT 5`;
+  db.query(sql, [], (error, resultado) => {
+    if (error) return res.status(500).json({ mensaje: "Error al obtener top 5" });
+    res.json({ top5: resultado });
+  });
+});
+
+// ============================================================
 // PRODUCTOS (CRUD completo)
 // ============================================================
 
 router.get("/api/productos", (req, res) => {
-  const sql = `SELECT * FROM productos ORDER BY nombre`;
+  const sql = `SELECT id, nombre, precio, categoria, activo, fecha_creacion FROM productos ORDER BY nombre`;
   db.query(sql, [], (error, resultado) => {
     if (error) return res.status(500).json({ mensaje: "Error al obtener los productos" });
     res.json({ productos: resultado });

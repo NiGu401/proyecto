@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = '';
 
-function Dashboard() {
+function Panel() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -107,7 +107,7 @@ function Dashboard() {
   const isAdmin = usuario.rol_id === 1;
 
   return (
-    <div className="dashboard-container">
+    <div className="panel-container">
       <ToastContainer />
       <Container className="mt-4">
         <h1 className="mb-3">
@@ -116,7 +116,7 @@ function Dashboard() {
         <p>
           Correo: {usuario.correo} | Rol:{" "}
           <span className={isAdmin ? "text-danger fw-bold" : ""}>
-            {isAdmin ? "Administrador" : "Empleado"}
+            {isAdmin ? "Administrador" : "Usuario"}
           </span>
         </p>
 
@@ -132,15 +132,6 @@ function Dashboard() {
                     <Card.Title className="text-danger">Pedidos</Card.Title>
                     <h2 className="text-danger">{stats.pedidos}</h2>
                     <Card.Text>Total de pedidos</Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col md={3}>
-                <Card className="h-100 text-center border-success">
-                  <Card.Body>
-                    <Card.Title className="text-success">Productos</Card.Title>
-                    <h2 className="text-success">{stats.productos}</h2>
-                    <Card.Text>Catálogo activo</Card.Text>
                   </Card.Body>
                 </Card>
               </Col>
@@ -203,19 +194,12 @@ function Dashboard() {
                       <ListGroup.Item
                         action
                         className="list-group-item-action"
-                        onClick={() => navigate("/pedidos")}
-                        style={{ cursor: "pointer" }}
-                      >
-                        Ver Pedidos
-                      </ListGroup.Item>
-                      <ListGroup.Item
-                        action
-                        className="list-group-item-action"
                         onClick={() => navigate("/menu")}
                         style={{ cursor: "pointer" }}
                       >
-                        Ver Productos
+                        Ir al Menú
                       </ListGroup.Item>
+
                       <ListGroup.Item
                         action
                         className="list-group-item-action"
@@ -241,12 +225,7 @@ function Dashboard() {
                   <Card.Body>
                     <h4 className="admin-section-title">Resumen</h4>
                     <ListGroup variant="flush">
-                      <ListGroup.Item>
-                        <div className="d-flex justify-content-between">
-                          <span>Productos activos:</span>
-                          <span className="fw-bold">{stats.productos}</span>
-                        </div>
-                      </ListGroup.Item>
+
                       <ListGroup.Item>
                         <div className="d-flex justify-content-between">
                           <span>Reservas pendientes:</span>
@@ -289,4 +268,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Panel;

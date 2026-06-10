@@ -628,19 +628,30 @@
 }
 
 .menu-header {
+  height: 250px;
+  background: linear-gradient(135deg, #C21919 0%, #e24843 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  color: white;
   margin-bottom: 30px;
+}
+
+.menu-hero-overlay {
+  padding: 30px;
 }
 
 .menu-title {
   font-size: 3rem;
-  color: #C21919;
   margin-bottom: 10px;
+  color: white;
 }
 
 .menu-subtitle {
   font-size: 1.2rem;
-  color: #555;
+  color: white;
+  opacity: 0.9;
 }
 
 .menu-tabs {

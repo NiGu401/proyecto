@@ -18,31 +18,29 @@ const API_URL = '';
 
 function AdminPanel() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('pedidos');
+  const [activeTab, setActiveTab] = useState('productos');
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [usuario, setUsuario] = useState(null);
 
   // ====== ESTADO REAL DESDE BD ======
-  const [pedidos, setPedidos] = useState([]);
   const [productos, setProductos] = useState([]);
   const [reservas, setReservas] = useState([]);
   const [contactos, setContactos] = useState([]);
   const [logs, setLogs] = useState([]);
 
-  const [loadingPedidos, setLoadingPedidos] = useState(true);
   const [loadingProductos, setLoadingProductos] = useState(true);
   const [loadingReservas, setLoadingReservas] = useState(true);
   const [loadingContactos, setLoadingContactos] = useState(true);
   const [loadingLogs, setLoadingLogs] = useState(true);
 
-  // Datos para gráficos (simulados con datos reales si hay pedidos)
+  // Datos para gráficos (simulados con datos reales si hay reservas)
   const getChartData = () => {
     const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     const counts = [0, 0, 0, 0, 0, 0, 0];
-    pedidos.forEach((p) => {
+    reservas.forEach((r) => {
       try {
-        const d = new Date(p.fecha);
+        const d = new Date(r.fecha_entrega);
         if (!isNaN(d.getTime())) counts[d.getDay()] = (counts[d.getDay()] || 0) + 1;
       } catch (e) { }
     });
@@ -59,7 +57,6 @@ function AdminPanel() {
     setUsuario(JSON.parse(storedUser));
 
     // Cargar todos los datos desde BD
-    fetchPedidos();
     fetchProductos();
     fetchReservas();
     fetchContactos();
@@ -67,19 +64,6 @@ function AdminPanel() {
   }, [navigate]);
 
   // ====== FUNCIONES FETCH ======
-
-  const fetchPedidos = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/pedidos`);
-      const data = await response.json();
-      if (data.pedidos) {
-        setPedidos(data.pedidos);
-      }
-    } catch (error) {
-      console.error('Error al obtener pedidos:', error);
-    }
-    setLoadingPedidos(false);
-  };
 
   const fetchProductos = async () => {
     try {
@@ -227,21 +211,6 @@ function AdminPanel() {
     }
   };
 
-  const updateOrderStatus = async (id, newStatus) => {
-    try {
-      const token = localStorage.getItem('token');
-      await fetch(`${API_URL}/api/pedido/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: token },
-        body: JSON.stringify({ estado: newStatus }),
-      });
-      toast.success('Estatus actualizado');
-      fetchPedidos();
-    } catch (error) {
-      toast.error('Error al actualizar estado');
-    }
-  };
-
   const updateReservaEstado = async (id, estado) => {
     try {
       const token = localStorage.getItem('token');
@@ -319,10 +288,9 @@ function AdminPanel() {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
     doc.setTextColor(80, 80, 80);
-    doc.text(`Pedidos: ${pedidos.length}`, 25, 72);
-    doc.text(`Productos activos: ${productos.filter((p) => p.activo === 1 || p.activo === true).length}`, 25, 82);
-    doc.text(`Reservas pendientes: ${reservas.filter((r) => r.estado === 'pendiente').length}`, 25, 92);
-    doc.text(`Mensajes sin leer: ${contactos.filter((c) => c.leido === 0).length}`, 25, 102);
+    doc.text(`Productos activos: ${productos.filter((p) => p.activo === 1 || p.activo === true).length}`, 25, 72);
+    doc.text(`Reservas pendientes: ${reservas.filter((r) => r.estado === 'pendiente').length}`, 25, 82);
+    doc.text(`Mensajes sin leer: ${contactos.filter((c) => c.leido === 0).length}`, 25, 92);
 
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(9);
@@ -332,18 +300,18 @@ function AdminPanel() {
     toast.success('PDF generado y descargado');
   };
 
-  const downloadCSV = () => {
-    const headers = ['ID', 'Cliente', 'Productos', 'Total', 'Estado', 'Fecha'];
-    const rows = pedidos.map((p) => [p.id, p.cliente, p.productos, p.total, p.estado, p.fecha]);
+  const downloadReservaCSV = () => {
+    const headers = ['ID', 'Tipo', 'Sabor', 'Fecha Entrega', 'Estado'];
+    const rows = reservas.map((r) => [r.id, r.tipo_torta, r.sabor, new Date(r.fecha_entrega).toLocaleDateString(), r.estado]);
     const csvContent = [headers, ...rows].map((row) => row.join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'pedidos.csv';
+    a.download = 'reservas.csv';
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('CSV descargado');
+    toast.success('CSV de reservas descargado');
   };
 
   const [formData, setFormData] = useState({
@@ -355,13 +323,6 @@ function AdminPanel() {
   });
 
   if (!usuario) return null;
-
-  const statusLabels = {
-    pendiente: 'Pendiente',
-    preparando: 'Preparando',
-    enviado: 'Enviando',
-    completado: 'Completado',
-  };
 
   const reservaStatusLabels = {
     pendiente: 'Pendiente',
@@ -385,9 +346,6 @@ function AdminPanel() {
       <Container className="mt-4">
         {/* Tabs */}
         <div className="admin-tabs">
-          <Button variant={activeTab === 'pedidos' ? 'danger' : 'outline-danger'} onClick={() => setActiveTab('pedidos')}>
-            Pedidos ({pedidos.length})
-          </Button>
           <Button variant={activeTab === 'productos' ? 'danger' : 'outline-danger'} onClick={() => setActiveTab('productos')}>
             Productos ({productos.length})
           </Button>
@@ -404,73 +362,6 @@ function AdminPanel() {
             Logs ({logs.length})
           </Button>
         </div>
-
-        {/* ====== PEDIDOS ====== */}
-        {activeTab === 'pedidos' && (
-          <Card className="mt-4">
-            <Card.Body>
-              <div className="admin-section-header">
-                <h3 className="admin-section-title">Gestión de Pedidos (BD)</h3>
-                <div>
-                  <Button variant="danger" size="sm" onClick={fetchPedidos} className="me-1">
-                    Actualizar
-                  </Button>
-                  <Button variant="danger" size="sm" onClick={downloadCSV}>
-                    CSV
-                  </Button>
-                </div>
-              </div>
-              {loadingPedidos ? (
-                <p>Cargando pedidos...</p>
-              ) : pedidos.length === 0 ? (
-                <p className="text-center text-muted">No hay pedidos registrados</p>
-              ) : (
-                <Table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Cliente</th>
-                      <th>Productos</th>
-                      <th>Total</th>
-                      <th>Estado</th>
-                      <th>Fecha</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pedidos.map((pedido) => (
-                      <tr key={pedido.id}>
-                        <td>#{pedido.id}</td>
-                        <td>{pedido.cliente}</td>
-                        <td>{pedido.productos}</td>
-                        <td>${parseFloat(pedido.total).toFixed(2)}</td>
-                        <td>
-                          <span className={`status-badge status-${pedido.estado}`}>
-                            {statusLabels[pedido.estado] || pedido.estado}
-                          </span>
-                        </td>
-                        <td>{new Date(pedido.fecha).toLocaleDateString()}</td>
-                        <td>
-                          <Form.Select
-                            size="sm"
-                            value={pedido.estado}
-                            onChange={(e) => updateOrderStatus(pedido.id, e.target.value)}
-                            className="status-select"
-                          >
-                            <option value="pendiente">Pendiente</option>
-                            <option value="preparando">Preparando</option>
-                            <option value="enviado">Enviado</option>
-                            <option value="completado">Completado</option>
-                          </Form.Select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              )}
-            </Card.Body>
-          </Card>
-        )}
 
         {/* ====== PRODUCTOS ====== */}
         {activeTab === 'productos' && (
@@ -508,7 +399,7 @@ function AdminPanel() {
                       <tr key={product.id} style={{ opacity: (product.activo === 1 || product.activo === true) ? 1 : 0.5 }}>
                         <td>#{product.id}</td>
                         <td>{product.nombre}</td>
-                        <td>${parseFloat(product.precio).toFixed(2)}</td>
+                        <td>Bs {parseFloat(product.precio).toFixed(2)}</td>
                         <td>{product.categoria}</td>
                         <td>
                           <span className={`status-badge ${(product.activo === 1 || product.activo === true) ? 'status-active' : 'status-inactive'}`}>
@@ -659,12 +550,11 @@ function AdminPanel() {
 
         {/* ====== REPORTES ====== */}
         {activeTab === 'reportes' && (
-          <div className="mt-4">
-            <Row>
-              <Col md={6}>
-                <Card>
-                  <Card.Body>
-                    <h4 className="report-title">Pedidos por Día de la Semana</h4>
+          <div className="mt-4 text-center">
+            <div>
+              <Card style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <Card.Body>
+                    <h4 className="report-title">Reservas por Día de la Semana</h4>
                     <ResponsiveContainer width="100%" height={300}>
                       <BarChart data={getChartData()}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -672,42 +562,16 @@ function AdminPanel() {
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="ventas" fill="#C21919" name="Pedidos" />
+                        <Bar dataKey="ventas" fill="#C21919" name="Reservas" />
                       </BarChart>
                     </ResponsiveContainer>
                   </Card.Body>
                 </Card>
-              </Col>
-              <Col md={6}>
-                <Card>
-                  <Card.Body>
-                    <h4 className="report-title">Resumen General</h4>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={[
-                        { name: 'Pedidos', value: pedidos.length },
-                        { name: 'Productos', value: productos.length },
-                        { name: 'Reservas', value: reservas.length },
-                        { name: 'Contactos', value: contactos.length },
-                      ]}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="value" fill="#198754" name="Cantidad" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
+            </div>
 
             <div className="report-actions mt-4 text-center">
               <Button variant="danger" size="lg" onClick={generatePDFReport}>
                 Descargar Reporte PDF
-              </Button>
-              <Button variant="outline-danger" size="lg" onClick={downloadCSV} className="ms-2">
-                Descargar CSV Pedidos
               </Button>
             </div>
           </div>
@@ -779,7 +643,7 @@ function AdminPanel() {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="productPrice">
-              <Form.Label>Precio ($)</Form.Label>
+              <Form.Label>Precio (Bs)</Form.Label>
               <Form.Control
                 type="number"
                 step="0.01"
@@ -821,7 +685,7 @@ function AdminPanel() {
           </Button>
         </Modal.Footer>
       </Modal>
-  </div>
+    </div>
   );
 }
 

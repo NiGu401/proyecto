@@ -40,7 +40,6 @@ function Login() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Client-IP": window.location.hostname
         },
         body: JSON.stringify({
           correo,
@@ -64,7 +63,7 @@ function Login() {
       window.dispatchEvent(new Event('storage'));
       window.dispatchEvent(new CustomEvent('login'));
 
-      navigate("/dashboard");
+      navigate("/admin-panel");
     } catch (error) {
       console.error(error);
       setError(error.message || "Correo, contraseña o CAPTCHA incorrectos");
