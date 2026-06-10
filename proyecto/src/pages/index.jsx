@@ -19,7 +19,7 @@ function Inicio2() {
 
   const testimonials = [
     {
-      nombre: 'María García',
+      nombre: 'Hola hola',
       texto: '¡Los pasteles más deliciosos que he probado! Mi cumpleaños fue perfecto gracias a Instantes Dulces.',
       rating: 5,
     },
