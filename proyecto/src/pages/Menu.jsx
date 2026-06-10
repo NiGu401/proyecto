@@ -15,28 +15,28 @@ function Menu() {
 
   const products = {
     pasteles: [
-      { id: 1, name: 'Pastel de Chocolate', price: 35, desc: 'Exquisito pastel de chocolate con ganache', img: '/Imagenes/Comida Rapida.jpg' },
-      { id: 2, name: 'Tarta de Fresas', price: 40, desc: 'Tarta con fresas naturales y crema chantilly', img: '/Imagenes/verduras.jpg' },
-      { id: 3, name: 'Tarta de Bodas (3 pisos)', price: 150, desc: 'Perfecta para momentos especiales', img: '/Imagenes/Bebidas.png' },
-      { id: 4, name: 'Pastel de Vainilla', price: 30, desc: 'Clásico pastel de vainilla con frosting', img: '/Imagenes/Logo.png' },
+      { id: 1, name: 'Pastel de Chocolate', price: 35, desc: 'Exquisito pastel de chocolate con ganache', img: '/Imagenes/pasteldechoco.jpg' },
+      { id: 2, name: 'Tarta de Fresas', price: 40, desc: 'Tarta con fresas naturales y crema chantilly', img: '/Imagenes/tartadefresas.jfif' },
+      { id: 3, name: 'Tarta de Bodas (3 pisos)', price: 150, desc: 'Perfecta para momentos especiales', img: '/Imagenes/tartadebodas.jfif' },
+      { id: 4, name: 'Pastel de Vainilla', price: 30, desc: 'Clásico pastel de vainilla con frosting', img: '/Imagenes/pasteldevaini.jfif' },
     ],
     reposteria: [
-      { id: 5, name: 'Cupcake Vainilla', price: 3, desc: 'Cupcake con frosting de vainilla', img: '/Imagenes/Logo.svg' },
-      { id: 6, name: 'Cheesecake Arándanos', price: 5, desc: 'Cheesecake cremoso con arándanos', img: '/Imagenes/Logo.png' },
-      { id: 7, name: 'Galletas de Chocolate', price: 2, desc: 'Galletas crujientes con chips de chocolate', img: '/Imagenes/Comida Rapida.jpg' },
-      { id: 8, name: 'Brownies', price: 2, desc: 'Brownies densos de chocolate', img: '/Imagenes/verduras.jpg' },
+      { id: 5, name: 'Cupcake Vainilla', price: 3, desc: 'Cupcake con frosting de vainilla', img: '/Imagenes/cupcake.jpg' },
+      { id: 6, name: 'Cheesecake Arándanos', price: 5, desc: 'Cheesecake cremoso con arándanos', img: '/Imagenes/chessecake.jfif' },
+      { id: 7, name: 'Galletas de Chocolate', price: 2, desc: 'Galletas crujientes con chips de chocolate', img: '/Imagenes/galletas.jpg' },
+      { id: 8, name: 'Brownies', price: 2, desc: 'Brownies densos de chocolate', img: '/Imagenes/brownie.jpg' },
     ],
     cafeteria: [
-      { id: 9, name: 'Espresso Doble', price: 4, desc: 'Café espresso intenso y aromático', img: '/Imagenes/Bebidas.png' },
-      { id: 10, name: 'Café de Grano', price: 5, desc: 'Café premium de grano selecto', img: '/Imagenes/Logo.png' },
-      { id: 11, name: 'Té Matcha Latte', price: 6, desc: 'Matcha japonés con leche cremosa', img: '/Imagenes/Bebidas.png' },
-      { id: 12, name: 'Té Infusionado', price: 4, desc: 'Selección de tés orgánicos', img: '/Imagenes/verduras.jpg' },
+      { id: 9, name: 'Espresso Doble', price: 4, desc: 'Café espresso intenso y aromático', img: '/Imagenes/picho.jfif' },
+      { id: 10, name: 'Café de Grano', price: 5, desc: 'Café premium de grano selecto', img: '/Imagenes/cafe.jpg' },
+      { id: 11, name: 'Té Matcha Latte', price: 6, desc: 'Matcha japonés con leche cremosa', img: '/Imagenes/tematcha.jpg' },
+      { id: 12, name: 'Té Infusionado', price: 4, desc: 'Selección de tés orgánicos', img: '/Imagenes/teinfucionado.jpg' },
     ],
     combos: [
-      { id: 13, name: 'Café + Cookie', price: 6, desc: 'Espresso doble con galleta de chocolate', img: '/Imagenes/Bebidas.png' },
-      { id: 14, name: 'Sándwich + Té', price: 8, desc: 'Sándwich artesanal con té infusionado', img: '/Imagenes/Comida Rapida.jpg' },
-      { id: 15, name: 'Cupcake + Cappuccino', price: 8, desc: 'Cupcake de chocolate con cappuccino', img: '/Imagenes/Logo.svg' },
-      { id: 16, name: 'Combo Familiar', price: 45, desc: 'Pastel individual para 4 personas + bebidas', img: '/Imagenes/verduras.jpg' },
+      { id: 13, name: 'Café + Cookie', price: 6, desc: 'Espresso doble con galleta de chocolate', img: '/Imagenes/cafecookie.jpg' },
+      { id: 14, name: 'Sándwich + Té', price: 8, desc: 'Sándwich artesanal con té infusionado', img: '/Imagenes/tesan.jpeg' },
+      { id: 15, name: 'Cupcake + Cappuccino', price: 8, desc: 'Cupcake de chocolate con cappuccino', img: '/Imagenes/cupcapu.PNG' },
+      { id: 16, name: 'Combo Familiar', price: 45, desc: 'Pastel individual para 4 personas + bebidas', img: '/Imagenes/pasteles.jfif' },
     ],
   };
 
