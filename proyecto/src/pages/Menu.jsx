@@ -88,9 +88,6 @@ function Menu() {
                     <Button size="sm" variant="danger" onClick={() => addToCart(product)}>
                       Agregar
                     </Button>
-                    <Button size="sm" variant="outline-danger" className="ms-2">
-                      Ver
-                    </Button>
                   </div>
                 </Card.Body>
               </Card>
