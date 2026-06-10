@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css.css";
 
-const API_URL = "http://192.168.250.92:3001";
+const API_URL = '';
 
 function Login() {
   const navigate = useNavigate();
@@ -58,6 +58,10 @@ function Login() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("usuario", JSON.stringify(data.usuario));
 
+      // Notificar al Header que cambió el estado de login
+      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new CustomEvent('login'));
+
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
@@ -78,19 +82,19 @@ function Login() {
     <div className="login-container">
       <form className="login-card" onSubmit={iniciarSesion}>
         <div className="logo-container">
-          <span className="logo-icon">🍞</span>
+          <span className="logo-icon">Panadería</span>
         </div>
-        <h1>Proyecto</h1>
+        <h1>Instantes Dulces</h1>
         <p>Inicie sesión para continuar</p>
 
         {error && (
           <div className="error-message">
-            ⚠️ {error}
+            {error}
           </div>
         )}
 
         <div className="input-group">
-          <span className="input-icon">✉️</span>
+          <span className="input-icon">Correo</span>
           <input
             type="email"
             placeholder="Correo electrónico"
@@ -102,7 +106,7 @@ function Login() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">🔒</span>
+          <span className="input-icon">Contraseña</span>
           <input
             type="password"
             placeholder="Contraseña"
@@ -126,12 +130,12 @@ function Login() {
             disabled={cargando}
             title="Actualizar captcha"
           >
-            🔄
+            Actualizar
           </button>
         </div>
 
         <div className="input-group">
-          <span className="input-icon">🔢</span>
+          <span className="input-icon">Código</span>
           <input
             type="text"
             placeholder="Ingrese el código de la imagen"
@@ -151,7 +155,7 @@ function Login() {
           className="btn-back"
           onClick={() => navigate("/registro")}
         >
-          📝 ¿No tienes cuenta? Regístrate
+          ¿No tienes cuenta? Regístrate
         </button>
       </form>
     </div>

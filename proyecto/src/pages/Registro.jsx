@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css.css";
 
-const API_URL = "http://192.168.250.92:3001";
+const API_URL = '';
 
 function Registro() {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ function Registro() {
 
     // Validar que las contraseñas coincidan
     if (formData.contrasena !== formData.confirmarContrasena) {
-      setError("❌ Las contraseñas no coinciden");
+      setError("Las contraseñas no coinciden");
       setCargando(false);
       return;
     }
@@ -59,7 +59,7 @@ function Registro() {
     // Validar requisitos de contraseña
     const passwordErrors = validarPassword(formData.contrasena);
     if (passwordErrors.length > 0) {
-      setError("❌ " + passwordErrors.join(" | "));
+      setError("Error" + passwordErrors.join(" | "));
       setCargando(false);
       return;
     }
@@ -85,7 +85,7 @@ function Registro() {
       }
 
       setExito(
-        "✅ Usuario registrado exitosamente. Redirigiendo al login..."
+        "Usuario registrado exitosamente. Redirigiendo al login..."
       );
       setTimeout(() => {
         navigate("/login");
@@ -102,16 +102,16 @@ function Registro() {
     <div className="login-container">
       <form className="login-card registro-card" onSubmit={handleSubmit}>
         <div className="logo-container">
-          <span className="logo-icon">🍞</span>
+          <span className="logo-icon">Panadería</span>
         </div>
         <h1>Registro de Usuario</h1>
         <p>Crea una cuenta para acceder al sistema</p>
 
-        {error && <div className="error-message">⚠️ {error}</div>}
-        {exito && <div className="success-message">✅ {exito}</div>}
+        {error && <div className="error-message">{error}</div>}
+        {exito && <div className="success-message">{exito}</div>}
 
         <div className="input-group">
-          <span className="input-icon">👤</span>
+          <span className="input-icon">Nombre</span>
           <input
             type="text"
             name="nombre"
@@ -124,7 +124,7 @@ function Registro() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">✉️</span>
+          <span className="input-icon">Correo</span>
           <input
             type="email"
             name="correo"
@@ -137,7 +137,7 @@ function Registro() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">🔒</span>
+          <span className="input-icon">Password</span>
           <input
             type="password"
             name="contrasena"
@@ -158,7 +158,7 @@ function Registro() {
                 formData.contrasena.length >= 8 ? "valid" : ""
               }
             >
-              {formData.contrasena.length >= 8 ? "✅" : "❌"} Al menos 8
+              {formData.contrasena.length >= 8 ? "Valido" : "Invalido"} Al menos 8
               caracteres
             </li>
             <li
@@ -166,7 +166,7 @@ function Registro() {
                 /[A-Z]/.test(formData.contrasena) ? "valid" : ""
               }
             >
-              {/[A-Z]/.test(formData.contrasena) ? "✅" : "❌"} Al menos una
+              {/[A-Z]/.test(formData.contrasena) ? "Valido" : "Invalido"} Al menos una
               letra mayúscula
             </li>
             <li
@@ -174,7 +174,7 @@ function Registro() {
                 /[0-9]/.test(formData.contrasena) ? "valid" : ""
               }
             >
-              {/[0-9]/.test(formData.contrasena) ? "✅" : "❌"} Al menos un
+              {/[0-9]/.test(formData.contrasena) ? "Valido" : "Invalido"} Al menos un
               número
             </li>
             <li
@@ -182,14 +182,14 @@ function Registro() {
                 /[!@#$%^&*]/.test(formData.contrasena) ? "valid" : ""
               }
             >
-              {/[!@#$%^&*]/.test(formData.contrasena) ? "✅" : "❌"} Al menos
+              {/[!@#$%^&*]/.test(formData.contrasena) ? "Valido" : "Invalido"} Al menos
               un carácter especial
             </li>
           </ul>
         </div>
 
         <div className="input-group">
-          <span className="input-icon">🔒</span>
+          <span className="input-icon">Confirmar Password</span>
           <input
             type="password"
             name="confirmarContrasena"
@@ -202,7 +202,7 @@ function Registro() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">⚙️</span>
+          <span className="input-icon">Rol</span>
           <select
             name="rol_id"
             value={formData.rol_id}

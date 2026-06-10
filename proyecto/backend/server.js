@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
+const reservaContactoRoutes = require("./routes/reservaContactoRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -20,16 +21,21 @@ app.use(express.json());
 // ==================== RUTAS ====================
 app.get("/", (req, res) => {
   res.json({
-    mensaje: "✅ API de Proyecto funcionando correctamente",
+    mensaje: "✅ API de Instantes Dulces funcionando correctamente",
     version: "1.0.0",
     endpoints: {
       auth: "/captcha, /login, /registro, /logout",
+      reservas: "/api/reserva (POST), /api/reservas (GET)",
+      contactos: "/api/contacto (POST), /api/contactos (GET)",
     },
   });
 });
 
 // Rutas de autenticación (públicas)
 app.use(authRoutes);
+
+// Rutas de reservas y contacto (reservas: POST público, GET solo admin)
+app.use(reservaContactoRoutes);
 
 // ==================== MANEJO DE ERRORES ====================
 app.use((err, req, res, next) => {

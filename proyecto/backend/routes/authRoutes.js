@@ -3,13 +3,46 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const svgCaptcha = require("svg-captcha");
 const db = require("../db");
-const { verificarToken } = require("../middleware/authMiddleware");
 
 require("dotenv").config();
 const router = express.Router();
 const SECRET = process.env.JWT_SECRET;
 
 const captchaStore = new Map();
+
+/**
+ * Registra un log de acceso en la BD
+ * Nota: Usa la tabla logs_acceso con columnas existentes: usuario_id, ip, evento, browser, fecha
+ */
+function registrarLog(nombreUsuario, ip, evento, navegador) {
+  // Si la tabla tiene usuario_id (fk a usuarios), buscar el ID
+  // Si tiene usuario (varchar), insertar directamente
+  const sql = `INSERT INTO logs_acceso (usuario_id, ip, evento, browser, fecha) VALUES ((SELECT id FROM usuarios WHERE nombre=? LIMIT 1), ?, ?, ?, NOW())`;
+  db.query(sql, [nombreUsuario, ip, evento, navegador], (err) => {
+    if (err) {
+      // Fallback: si no encuentra el usuario, insertar sin ID
+      db.query(`INSERT INTO logs_acceso (ip, evento, browser) VALUES (?, ?, ?)`, [ip, evento, navegador], (err2) => {
+        if (err2) console.error("Error al registrar log (fallback):", err2.message);
+      });
+    }
+  });
+}
+
+/**
+ * Extrae información del navegador desde el User-Agent
+ */
+function getBrowserInfo(userAgent) {
+  if (!userAgent) return "Navegador desconocido";
+  const browsers = ["Chrome", "Firefox", "Safari", "Edge", "Opera", "Brave", "MSIE"];
+  for (const b of browsers) {
+    if (userAgent.includes(b)) {
+      const regex = new RegExp(b + " \\d+\\.\\d+");
+      const match = userAgent.match(regex);
+      return match ? match[0] : b;
+    }
+  }
+  return "Navegador desconocido";
+}
 
 setInterval(() => {
   const now = Date.now();
@@ -65,40 +98,30 @@ router.post("/login", (req, res) => {
   const { correo, contrasena, captchaId, captchaText } = req.body;
 
   if (!captchaId || !captchaText) {
-    return res.status(400).json({
-      mensaje: "❌ CAPTCHA requerido",
-    });
+    return res.status(400).json({ mensaje: "❌ CAPTCHA requerido" });
   }
 
   const captchaValido = verificarCaptcha(captchaId, captchaText);
   if (!captchaValido) {
-    return res.status(400).json({
-      mensaje: "❌ CAPTCHA incorrecto. Intente nuevamente.",
-    });
+    return res.status(400).json({ mensaje: "❌ CAPTCHA incorrecto. Intente nuevamente." });
   }
 
   const sql = `SELECT * FROM usuarios WHERE correo = ? AND estado = 1`;
 
   db.query(sql, [correo], async (error, resultado) => {
     if (error) {
-      return res.status(500).json({
-        mensaje: "Error del servidor",
-      });
+      return res.status(500).json({ mensaje: "Error del servidor" });
     }
 
     if (resultado.length === 0) {
-      return res.status(401).json({
-        mensaje: "❌ Usuario no encontrado o cuenta inactiva",
-      });
+      return res.status(401).json({ mensaje: "❌ Usuario no encontrado o cuenta inactiva" });
     }
 
     const usuario = resultado[0];
     const coincide = await bcrypt.compare(contrasena, usuario.contrasena);
 
     if (!coincide) {
-      return res.status(401).json({
-        mensaje: "❌ Contraseña incorrecta",
-      });
+      return res.status(401).json({ mensaje: "❌ Contraseña incorrecta" });
     }
 
     const token = jwt.sign(
@@ -110,6 +133,14 @@ router.post("/login", (req, res) => {
       },
       SECRET,
       { expiresIn: "8h" }
+    );
+
+    // Registrar log de acceso (ingreso)
+    registrarLog(
+      usuario.nombre,
+      req.ip || req.connection.remoteAddress,
+      "ingreso",
+      getBrowserInfo(req.headers["user-agent"])
     );
 
     res.json({
@@ -141,27 +172,19 @@ router.post("/registro", async (req, res) => {
 
     db.query(
       sql,
-      [nombre, correo, passwordHash, rol_id],
+      [nombre, correo, passwordHash, rol_id || 2],
       (error, result) => {
         if (error) {
           if (error.code === "ER_DUP_ENTRY") {
-            return res.status(400).json({
-              mensaje: "❌ El correo ya está registrado",
-            });
+            return res.status(400).json({ mensaje: "❌ El correo ya está registrado" });
           }
-          return res.status(500).json({
-            mensaje: "Error al registrar usuario",
-          });
+          return res.status(500).json({ mensaje: "Error al registrar usuario" });
         }
-        res.json({
-          mensaje: "✅ Usuario registrado exitosamente",
-        });
+        res.json({ mensaje: "✅ Usuario registrado exitosamente" });
       }
     );
   } catch (error) {
-    res.status(500).json({
-      mensaje: "Error del servidor",
-    });
+    res.status(500).json({ mensaje: "Error del servidor" });
   }
 });
 
@@ -169,10 +192,25 @@ router.post("/registro", async (req, res) => {
  * @route POST /logout
  * @description Cierra la sesión
  */
-router.post("/logout", verificarToken, (req, res) => {
-  res.json({
-    mensaje: "✅ Sesión cerrada correctamente",
-  });
+router.post("/logout", (req, res) => {
+  try {
+    // Registrar log de salida si hay información de usuario
+    if (req.headers["authorization"]) {
+      const token = req.headers["authorization"];
+      const decoded = jwt.verify(token, SECRET);
+      if (decoded && decoded.nombre) {
+        registrarLog(
+          decoded.nombre,
+          req.ip || req.connection.remoteAddress,
+          "salida",
+          getBrowserInfo(req.headers["user-agent"])
+        );
+      }
+    }
+  } catch (e) {
+    // No se puede verificar el token, ignorar
+  }
+  res.json({ mensaje: "✅ Sesión cerrada correctamente" });
 });
 
 module.exports = router;
