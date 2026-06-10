@@ -1,39 +1,72 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0',
     port: 5173,
     strictSSL: false,
-    hmr: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3001',
+        target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
-      },
-      '/logout': {
-        target: 'http://127.0.0.1:3001',
-        changeOrigin: true,
-        secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            const ip = req.socket?.remoteAddress || '127.0.0.1';
+            proxyReq.setHeader('X-Forwarded-For', ip);
+            proxyReq.setHeader('X-Real-IP', ip);
+          });
+        },
       },
       '/login': {
-        target: 'http://127.0.0.1:3001',
+        target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            const ip = req.socket?.remoteAddress || '127.0.0.1';
+            proxyReq.setHeader('X-Forwarded-For', ip);
+            proxyReq.setHeader('X-Real-IP', ip);
+          });
+        },
+      },
+      '/logout': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            const ip = req.socket?.remoteAddress || '127.0.0.1';
+            proxyReq.setHeader('X-Forwarded-For', ip);
+            proxyReq.setHeader('X-Real-IP', ip);
+          });
+        },
       },
       '/captcha': {
-        target: 'http://127.0.0.1:3001',
+        target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            const ip = req.socket?.remoteAddress || '127.0.0.1';
+            proxyReq.setHeader('X-Forwarded-For', ip);
+            proxyReq.setHeader('X-Real-IP', ip);
+          });
+        },
       },
       '/registro': {
-        target: 'http://127.0.0.1:3001',
+        target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            const ip = req.socket?.remoteAddress || '127.0.0.1';
+            proxyReq.setHeader('X-Forwarded-For', ip);
+            proxyReq.setHeader('X-Real-IP', ip);
+          });
+        },
       },
     },
   },

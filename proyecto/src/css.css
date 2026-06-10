@@ -388,6 +388,8 @@
 
 .hero-carousel .carousel-item {
   height: 550px;
+  min-height: 550px;
+  transition: none;
 }
 
 .carousel-full-width {
@@ -395,6 +397,29 @@
   height: 550px;
   object-fit: cover;
   display: block;
+  transition: opacity 0.5s ease;
+}
+
+/* Garantiza que siempre se vea alargada y cubra el contenedor */
+.hero-carousel .carousel-item img {
+  width: 100% !important;
+  height: 550px !important;
+  object-fit: cover !important;
+  object-position: center;
+}
+
+/* Prevent transition size changes */
+.hero-carousel .carousel-item img {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Ensure consistent sizing during fade transition */
+.hero-carousel .carousel-item img {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: opacity;
 }
 
 .carousel-caption-hero {

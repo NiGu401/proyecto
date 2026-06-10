@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './pages/Home'
+
 import Inicio2 from './pages/index'
 import Comida from './pages/Comida'
 import Postres from './pages/Postres'
@@ -26,7 +26,7 @@ function App() {
         <Header />
         <Routes>
           <Route path='/' element={<Inicio2/>}/>
-          <Route path='/inicio2' element={<Home/>}/>
+          
           <Route path='/comida' element={<Comida/>}/>
           <Route path='/postres' element={<Postres/>}/>
           <Route path='/menu' element={<Menu/>}/>

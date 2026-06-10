@@ -9,6 +9,29 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // ==================== MIDDLEWARES ====================
+app.set('trust proxy', 1);
+
+// Middleware para extraer la IP real del cliente
+function getClientIp(req) {
+  // Primero intenta obtener la IP del header X-Client-IP (enviado por el frontend)
+  const clientIp = req.headers['x-client-ip'];
+  if (clientIp) {
+    return clientIp;
+  }
+  // Luego intenta X-Forwarded-For (del proxy)
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) {
+    return forwarded.split(',')[0];
+  }
+  // Si no hay nada, intenta obtenerla de la conexión directa
+  return req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress;
+}
+
+app.use((req, res, next) => {
+  req.clientIp = getClientIp(req);
+  next();
+});
+
 app.use(
   cors({
     origin: ["http://localhost:5173", "http://192.168.250.92:5173"],
@@ -18,7 +41,11 @@ app.use(
 );
 app.use(express.json());
 
-// ==================== RUTAS ====================
+app.use((req, res, next) => {
+  next();
+});
+
+// ==================== RUTAS ===================="}]</parameter></function></tool_call>](url) 
 app.get("/", (req, res) => {
   res.json({
     mensaje: "✅ API de Pastelería de los Sabores funcionando correctamente",

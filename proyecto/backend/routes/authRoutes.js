@@ -12,20 +12,19 @@ const captchaStore = new Map();
 
 /**
  * Registra un log de acceso en la BD
- * Nota: Usa la tabla logs_acceso con columnas existentes: usuario_id, ip, evento, browser, fecha
+ * Nota: Usa la tabla logs_acceso con columnas existentes: usuario, ip, evento, navegador, fecha
  */
 function registrarLog(nombreUsuario, ip, evento, navegador) {
-  // Si la tabla tiene usuario_id (fk a usuarios), buscar el ID
-  // Si tiene usuario (varchar), insertar directamente
-  const sql = `INSERT INTO logs_acceso (usuario_id, ip, evento, browser, fecha) VALUES ((SELECT id FROM usuarios WHERE nombre=? LIMIT 1), ?, ?, ?, NOW())`;
-  db.query(sql, [nombreUsuario, ip, evento, navegador], (err) => {
-    if (err) {
-      // Fallback: si no encuentra el usuario, insertar sin ID
-      db.query(`INSERT INTO logs_acceso (ip, evento, browser) VALUES (?, ?, ?)`, [ip, evento, navegador], (err2) => {
-        if (err2) console.error("Error al registrar log (fallback):", err2.message);
-      });
+  // Insertar log con las columnas correctas de la tabla
+  db.query(
+    `INSERT INTO logs_acceso (usuario, ip, evento, navegador, fecha) VALUES (?, ?, ?, ?, NOW())`,
+    [nombreUsuario, ip, evento, navegador],
+    (err) => {
+      if (err) {
+        console.error("Error al registrar log:", err.message);
+      }
     }
-  });
+  );
 }
 
 /**
@@ -93,10 +92,10 @@ function verificarCaptcha(captchaId, userInput) {
 /**
  * @route POST /login
  * @description Inicia sesión verificando CAPTCHA
+ * DEBUG: SETEAR DEBUG_LOGIN=true en el .env para desactivar captcha
  */
 router.post("/login", (req, res) => {
   const { correo, contrasena, captchaId, captchaText } = req.body;
-
   if (!captchaId || !captchaText) {
     return res.status(400).json({ mensaje: "❌ CAPTCHA requerido" });
   }
@@ -138,7 +137,7 @@ router.post("/login", (req, res) => {
     // Registrar log de acceso (ingreso)
     registrarLog(
       usuario.nombre,
-      req.ip || req.connection.remoteAddress,
+      req.clientIp || req.ip || req.connection?.remoteAddress,
       "ingreso",
       getBrowserInfo(req.headers["user-agent"])
     );
@@ -201,7 +200,7 @@ router.post("/logout", (req, res) => {
       if (decoded && decoded.nombre) {
         registrarLog(
           decoded.nombre,
-          req.ip || req.connection.remoteAddress,
+          req.clientIp || req.ip || req.connection.remoteAddress,
           "salida",
           getBrowserInfo(req.headers["user-agent"])
         );

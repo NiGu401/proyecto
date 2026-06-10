@@ -40,6 +40,7 @@ function Login() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Client-IP": window.location.hostname
         },
         body: JSON.stringify({
           correo,
@@ -47,6 +48,7 @@ function Login() {
           captchaId,
           captchaText,
         }),
+        redirect: "manual"
       });
 
       const data = await response.json();

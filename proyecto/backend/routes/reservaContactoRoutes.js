@@ -162,7 +162,7 @@ router.post("/api/contacto", (req, res) => {
  * @description Obtener todos los mensajes de contacto
  */
 router.get("/api/contactos", (req, res) => {
-  const sql = `SELECT * FROM mensajes_contacto ORDER BY fecha_registro DESC`;
+  const sql = `SELECT * FROM mensajes_contacto WHERE leido != -1 ORDER BY fecha_registro DESC`;
 
   db.query(sql, [], (error, resultado) => {
     if (error) {
@@ -319,13 +319,7 @@ router.delete("/api/producto/:id", (req, res) => {
 // ============================================================
 
 router.get("/api/logs", (req, res) => {
-  // Unir con la tabla usuarios para mostrar nombres en lugar de IDs
-  const sql = `
-    SELECT la.id, u.nombre AS usuario, la.ip, la.evento, la.browser, la.fecha
-    FROM logs_acceso la
-    LEFT JOIN usuarios u ON la.usuario_id = u.id
-    ORDER BY la.fecha DESC
-  `;
+  const sql = `SELECT * FROM logs_acceso ORDER BY fecha DESC`;
   db.query(sql, [], (error, resultado) => {
     if (error) return res.status(500).json({ mensaje: "Error al obtener los logs", error: error.message });
     res.json({ logs: resultado });
