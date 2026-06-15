@@ -143,6 +143,7 @@ function AdminPanel() {
 
     try {
       const token = localStorage.getItem('token');
+
       if (editingId) {
         // Actualizar producto existente
         await fetch(`${API_URL}/api/producto/${editingId}`, {

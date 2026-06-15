@@ -92,7 +92,8 @@ conexion.connect((err) => {
       precio DECIMAL(10,2) NOT NULL,
       categoria VARCHAR(50) DEFAULT 'General',
       activo INT DEFAULT 1,
-      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      imagen VARCHAR(255)
     )
   `, (err) => {
     if (err) console.error("Error creando productos:", err.message);

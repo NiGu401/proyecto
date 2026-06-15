@@ -14,7 +14,7 @@ const categoryImages = {
   'Galletas': '/Imagenes/galletas.jpg',
   'Cupcakes': '/Imagenes/cupcake.jpg',
   'Cafetería y Té': '/Imagenes/carrucel2.jpg',
-  'Combos': '/Imagenes/pasteldechoco.jpg',
+  'Combos': '/Imagenes/tesan.jpeg',
   'Sándwiches': '/Imagenes/sandwich.jfif',
   'Bebidas': '/Imagenes/bebida.jfif',
   'Postres': '/Imagenes/postre.jfif',
@@ -148,7 +148,11 @@ function Menu() {
                     <div style={{ height: '180px', overflow: 'hidden', position: 'relative' }}>
                       <Card.Img
                         variant="top"
-                        src={categoryImages[categoria] || '/Imagenes/default.jpg'}
+                        src={
+                          producto.imagen
+                            ? `http://localhost:3001/${producto.imagen}`
+                            : categoryImages[categoria] || '/Imagenes/default.jpg'
+                        }
                         style={{
                           width: '100%',
                           height: '100%',

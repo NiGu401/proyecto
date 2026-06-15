@@ -1,7 +1,37 @@
 const express = require("express");
 const db = require("../db");
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
 
 const router = express.Router();
+
+// ==================== UPLOAD DE IMÁGENES DE PRODUCTOS ====================
+const imagenesDir = path.join(__dirname, '..', 'uploads', 'productos');
+
+const storageImagenes = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (!fs.existsSync(imagenesDir)) {
+      fs.mkdirSync(imagenesDir, { recursive: true });
+    }
+    cb(null, imagenesDir);
+  },
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const ext = path.extname(file.originalname);
+    cb(null, `producto_${timestamp}${ext}`);
+  }
+});
+
+const uploadImagen = multer({
+  storage: storageImagenes,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Solo se permiten imágenes (JPEG, PNG, WEBP, JPG)'));
+  }
+}).single('imagen');
 
 // ============================================================
 // RESERVAS (Agenda y Eventos)
@@ -215,23 +245,65 @@ router.delete("/api/contacto/:id", (req, res) => {
 });
 
 // ============================================================
-// PRODUCTOS (CRUD completo)
+// PRODUCTOS (CRUD completo con imágenes)
 // ============================================================
 
 router.get("/api/productos", (req, res) => {
-  const sql = `SELECT id, nombre, precio, categoria, activo, fecha_creacion FROM productos ORDER BY nombre`;
+  const sql = `SELECT id, nombre, precio, categoria, activo, imagen, fecha_creacion FROM productos ORDER BY nombre`;
   db.query(sql, [], (error, resultado) => {
     if (error) return res.status(500).json({ mensaje: "Error al obtener los productos" });
     res.json({ productos: resultado });
   });
 });
 
+// Ruta para subir imagen de un producto (POST: /api/producto-imagen/:id)
+router.post("/api/producto-imagen/:id", (req, res) => {
+  uploadImagen(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ mensaje: "❌ " + err.message });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ mensaje: "❌ No se recibió ninguna imagen" });
+    }
+
+    const { id } = req.params;
+    const imagenPath = req.file.filename;
+
+    try {
+      // Eliminar imagen anterior si existe
+      db.query("SELECT imagen FROM productos WHERE id = ?", [id], (errSelect, rows) => {
+        if (errSelect) {
+          return res.status(500).json({ mensaje: "Error al verificar imagen anterior" });
+        }
+        if (rows[0] && rows[0].imagen) {
+          const oldImg = path.join(imagenesDir, rows[0].imagen);
+          fs.unlink(oldImg, (unlinkErr) => {
+            if (unlinkErr) console.log("No se pudo eliminar imagen anterior:", unlinkErr.message);
+          });
+        }
+      });
+
+      // Actualizar la imagen en la DB
+      db.query("UPDATE productos SET imagen = ? WHERE id = ?", [imagenPath, id], (error) => {
+        if (error) {
+          console.error("Error al guardar imagen en DB:", error);
+          return res.status(500).json({ mensaje: "Error al actualizar la imagen", error: error.message });
+        }
+        res.json({ mensaje: "✅ Imagen actualizada", ruta: `/uploads/productos/${imagenPath}` });
+      });
+    } catch (e) {
+      res.status(500).json({ mensaje: "Error al actualizar imagen", error: e.message });
+    }
+  });
+});
+
 router.post("/api/producto", (req, res) => {
-  const { nombre, precio, categoria, activo } = req.body;
-  const sql = `INSERT INTO productos (nombre, precio, categoria, activo) VALUES (?, ?, ?, ?)`;
+  const { nombre, precio, categoria, activo, imagen } = req.body;
+  const sql = `INSERT INTO productos (nombre, precio, categoria, activo, imagen) VALUES (?, ?, ?, ?, ?)`;
   db.query(
     sql,
-    [nombre, parseFloat(precio), categoria || "General", activo ? 1 : 0],
+    [nombre, parseFloat(precio), categoria || "General", activo ? 1 : 0, imagen || null],
     (error, result) => {
       if (error) return res.status(500).json({ mensaje: "❌ Error al registrar el producto", error: error.message });
       res.json({ mensaje: "✅ Producto registrado exitosamente", id: result.insertId });
@@ -241,11 +313,11 @@ router.post("/api/producto", (req, res) => {
 
 router.put("/api/producto/:id", (req, res) => {
   const { id } = req.params;
-  const { nombre, precio, categoria, activo } = req.body;
-  const sql = `UPDATE productos SET nombre=?, precio=?, categoria=?, activo=? WHERE id=?`;
+  const { nombre, precio, categoria, activo, imagen } = req.body;
+  const sql = `UPDATE productos SET nombre=?, precio=?, categoria=?, activo=?, imagen=? WHERE id=?`;
   db.query(
     sql,
-    [nombre, parseFloat(precio), categoria || "General", activo ? 1 : 0, id],
+    [nombre, parseFloat(precio), categoria || "General", activo ? 1 : 0, imagen || null, id],
     (error) => {
       if (error) return res.status(500).json({ mensaje: "Error al actualizar el producto", error: error.message });
       res.json({ mensaje: "✅ Producto actualizado" });
@@ -255,10 +327,22 @@ router.put("/api/producto/:id", (req, res) => {
 
 router.delete("/api/producto/:id", (req, res) => {
   const { id } = req.params;
-  const sql = `DELETE FROM productos WHERE id = ?`;
-  db.query(sql, [id], (error) => {
-    if (error) return res.status(500).json({ mensaje: "Error al eliminar el producto", error: error.message });
-    res.json({ mensaje: "✅ Producto eliminado" });
+  // Obtener la imagen antes de borrar
+  db.query("SELECT imagen FROM productos WHERE id = ?", [id], (err, rows) => {
+    if (err) return res.status(500).json({ mensaje: "Error al eliminar el producto", error: err.message });
+
+    // Eliminar archivo de imagen si existe
+    if (rows[0] && rows[0].imagen) {
+      const imgPath = path.join(imagenesDir, rows[0].imagen);
+      fs.unlink(imgPath, (unlinkErr) => {
+        if (unlinkErr) console.log("No se pudo eliminar imagen:", unlinkErr.message);
+      });
+    }
+
+    db.query("DELETE FROM productos WHERE id = ?", [id], (error) => {
+      if (error) return res.status(500).json({ mensaje: "Error al eliminar el producto", error: error.message });
+      res.json({ mensaje: "✅ Producto eliminado" });
+    });
   });
 });
 

@@ -50,40 +50,59 @@ app.use((req, res, next) => {
 });
 
 // ==================== UPLOAD DE COMPROBANTES ====================
-const uploadDir = path.join(__dirname, 'comprobantes');
+const comprobantesDir = path.join(__dirname, 'comprobantes');
 const db = require('./db');
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+if (!fs.existsSync(comprobantesDir)) {
+  fs.mkdirSync(comprobantesDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const timestamp = Date.now();
-    const ext = path.extname(file.originalname);
-    const nombre = `comprobante_${timestamp}_${ext}`;
-    cb(null, nombre);
-  }
-});
-
-const upload = multer({
-  storage: storage,
+const uploadComprobantes = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, comprobantesDir),
+    filename: (req, file, cb) => {
+      const timestamp = Date.now();
+      const ext = path.extname(file.originalname);
+      cb(null, `comprobante_${timestamp}_${ext}`);
+    }
+  }),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Tipo de archivo no permitido. Solo se permiten imágenes (JPEG, PNG, WEBP)'));
-    }
+    if (allowedTypes.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Tipo de archivo no permitido. Solo se permiten imágenes'));
   }
 });
 
+// ==================== UPLOAD DE IMÁGENES DE PRODUCTOS ====================
+const imagenesProductosDir = path.join(__dirname, 'uploads', 'productos');
+
+if (!fs.existsSync(imagenesProductosDir)) {
+  fs.mkdirSync(imagenesProductosDir, { recursive: true });
+}
+
+const uploadProductos = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, imagenesProductosDir),
+    filename: (req, file, cb) => {
+      const timestamp = Date.now();
+      const ext = path.extname(file.originalname);
+      cb(null, `producto_${timestamp}${ext}`);
+    }
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Tipo de archivo no permitido. Solo se permiten imágenes (JPEG, PNG, WEBP, JPG)'));
+  }
+});
+
+// Servir las imágenes de productos estáticamente
+app.use('/uploads/productos', express.static(imagenesProductosDir));
+
 // RUTA: POST /api/comprobante - Recibe el comprobante de pago
-app.post('/api/comprobante', upload.single('comprobante'), (req, res) => {
+app.post('/api/comprobante', uploadComprobantes.single('comprobante'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ mensaje: 'No se recibió ninguna imagen' });
   }
@@ -120,7 +139,7 @@ app.post('/api/comprobante', upload.single('comprobante'), (req, res) => {
 });
 
 // RUTA: GET /api/ver-comprobante/:filename - Sirve las imágenes de comprobantes
-app.use('/api/ver-comprobante', express.static(uploadDir));
+app.use('/api/ver-comprobante', express.static(comprobantesDir));
 
 // ==================== RUTAS ====================</parameter></function></tool_call>](url) 
 app.get("/", (req, res) => {
