@@ -111,6 +111,7 @@ conexion.connect((err) => {
       telefono VARCHAR(20),
       detalles TEXT,
       respuesta_mercado_pago JSON,
+      ruta_comprobante VARCHAR(255),
       fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `, (err) => {

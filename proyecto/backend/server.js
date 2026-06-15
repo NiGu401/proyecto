@@ -1,5 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
@@ -46,7 +49,80 @@ app.use((req, res, next) => {
   next();
 });
 
-// ==================== RUTAS ===================="}]</parameter></function></tool_call>](url) 
+// ==================== UPLOAD DE COMPROBANTES ====================
+const uploadDir = path.join(__dirname, 'comprobantes');
+const db = require('./db');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const ext = path.extname(file.originalname);
+    const nombre = `comprobante_${timestamp}_${ext}`;
+    cb(null, nombre);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Tipo de archivo no permitido. Solo se permiten imágenes (JPEG, PNG, WEBP)'));
+    }
+  }
+});
+
+// RUTA: POST /api/comprobante - Recibe el comprobante de pago
+app.post('/api/comprobante', upload.single('comprobante'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ mensaje: 'No se recibió ninguna imagen' });
+  }
+  
+  const { nombre, email, telefono, items } = req.body;
+  const filePath = req.file.filename;
+  
+  // Guardar la info del pago en la base de datos
+  db.query(
+    'INSERT INTO pagos (tipo_pago, monto, estado, nombre, email, telefono, detalles, ruta_comprobante) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [
+      'transferencia',
+      0,
+      'pendiente',
+      nombre || '',
+      email || '',
+      telefono || '',
+      JSON.stringify({ items }),
+      filePath
+    ],
+    (error, result) => {
+      if (error) {
+        console.error('Error al guardar el pago en DB:', error);
+        return res.status(500).json({ mensaje: 'Error al guardar el comprobante en la base de datos' });
+      }
+      console.log('✅ Comprobante guardado:', filePath);
+      res.json({
+        mensaje: 'Comprobante guardado correctamente',
+        id: result.insertId,
+        ruta: `/api/ver-comprobante/${filePath}`
+      });
+    }
+  );
+});
+
+// RUTA: GET /api/ver-comprobante/:filename - Sirve las imágenes de comprobantes
+app.use('/api/ver-comprobante', express.static(uploadDir));
+
+// ==================== RUTAS ====================</parameter></function></tool_call>](url) 
 app.get("/", (req, res) => {
   res.json({
     mensaje: "✅ API de Pastelería de los Sabores funcionando correctamente",

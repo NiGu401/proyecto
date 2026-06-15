@@ -20,6 +20,9 @@ function CarritoFlotante({ productosDisponibles }) {
     nombre: false,
     email: false,
   });
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [loadingUpload, setLoadingUpload] = useState(false);
 
   const carritoRef = useRef(carrito);
 
@@ -95,6 +98,15 @@ function CarritoFlotante({ productosDisponibles }) {
     return valid;
   };
 
+  // Manejar cambio de archivo
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+    }
+  };
+
   // Iniciar checkout
   const iniciarCheckout = () => {
     if (carrito.length === 0) {
@@ -105,14 +117,53 @@ function CarritoFlotante({ productosDisponibles }) {
     setCheckoutStep(1);
     setPaymentDone(false);
     setPaymentErrors({ nombre: false, email: false });
+    setFile(null);
+    setPreview(null);
   };
 
-  // Procesar pago con QR
-  const confirmarPago = () => {
-    setPaymentDone(true);
-    setCarrito([]);
-    setShowCheckout(false);
-    toast.success('🎉 ¡Gracias por tu compra! Recibirás un correo con los detalles.');
+  // Subir comprobante y confirmar pago
+  const confirmarPago = async () => {
+    if (!file) {
+      toast.error('❌ Debés subir una imagen del comprobante');
+      return;
+    }
+
+    setLoadingUpload(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('comprobante', file);
+      formData.append('nombre', paymentData.nombre);
+      formData.append('email', paymentData.email);
+      formData.append('telefono', paymentData.telefono);
+      formData.append('items', JSON.stringify(carrito.map(item => ({
+        nombre: item.nombre,
+        precio: item.precio,
+        cantidad: item.cantidad,
+      }))));
+
+      const response = await fetch(`${API_URL}/api/comprobante`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setPaymentDone(true);
+        setCarrito([]);
+        localStorage.removeItem('carrito');
+        setShowCheckout(false);
+        toast.success('🎉 ¡Gracias por tu compra! Recibirás un correo con los detalles.');
+      } else {
+        toast.error('❌ Error al subir el comprobante: ' + data.mensaje);
+      }
+    } catch (error) {
+      console.error('Error al confirmar pago:', error);
+      toast.error('❌ Error de conexión');
+    } finally {
+      setLoadingUpload(false);
+    }
   };
 
   // Helper precio
@@ -374,16 +425,37 @@ function CarritoFlotante({ productosDisponibles }) {
           ) : (
             <>
               <h5 className="mb-3">📱 Pagá con QR</h5>
-              <p className="text-muted mb-4">Escaneá el siguiente código QR para completar tu pago:</p>
+              <p className="text-muted mb-3">Escaneá el QR y subí el comprobante de pago:</p>
+              
               <div className="text-center mb-4">
-                <div className="p-4 border rounded" style={{ background: '#fff', maxWidth: '300px', margin: '0 auto' }}>
+                <div className="p-3 border rounded mb-3" style={{ background: '#fff', maxWidth: '300px', margin: '0 auto' }}>
                   <img src="/Imagenes/qr-pago.png" alt="QR para pagar" className="img-fluid" style={{ maxWidth: '250px' }} />
                 </div>
               </div>
-              <div className="text-center">
-                <p className="text-danger fw-bold fs-4">Total a pagar: {formatPrecio(totalCarrito)}</p>
+              
+              <div className="text-center mb-3">
+                <p className="text-danger fw-bold fs-5">Total a pagar: {formatPrecio(totalCarrito)}</p>
               </div>
-              <p className="text-muted text-center mt-3">Una vez realizado el pago, hacé clic en «Pagué» para confirmar tu pedido.</p>
+              
+              <div className="mb-3">
+                <Form.Label>Subir comprobante de pago *</Form.Label>
+                <Form.Control
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+                <Form.Text className="text-muted">Formatos: JPG, PNG, WEBP. Max 5MB.</Form.Text>
+              </div>
+              
+              {preview && (
+                <div className="text-center mb-3">
+                  <p className="text-muted">Vista previa:</p>
+                  <img src={preview} alt="Comprobante" className="img-fluid rounded border" style={{ maxWidth: '200px' }} />
+                </div>
+              )}
+              
+              <p className="text-muted text-center mt-3">Una vez realizado el pago, subí el comprobante y hacé clic en «Confirmar».</p>
             </>
           )}
         </Modal.Body>
@@ -424,8 +496,9 @@ function CarritoFlotante({ productosDisponibles }) {
             <Button
               variant="success"
               onClick={confirmarPago}
+              disabled={loadingUpload}
             >
-              ✅ Pagué y confirmar
+              {loadingUpload ? '⏳ Subiendo...' : '✅ Confirmar Pago'}
             </Button>
           )}
         </Modal.Footer>
