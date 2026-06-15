@@ -110,7 +110,7 @@ function Registro() {
         {exito && <div className="success-message">{exito}</div>}
 
         <div className="input-group">
-          <span className="input-icon">Nombre</span>
+          
           <input
             type="text"
             name="nombre"
@@ -123,7 +123,7 @@ function Registro() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">Correo</span>
+          
           <input
             type="email"
             name="correo"
@@ -136,7 +136,7 @@ function Registro() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">Password</span>
+          
           <input
             type="password"
             name="contrasena"
@@ -188,7 +188,6 @@ function Registro() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">Confirmar Password</span>
           <input
             type="password"
             name="confirmarContrasena"
@@ -201,7 +200,7 @@ function Registro() {
         </div>
 
         <div className="input-group">
-          <span className="input-icon">Rol</span>
+          <span className="input-icon">Rol:</span>
           <select
             name="rol_id"
             value={formData.rol_id}
