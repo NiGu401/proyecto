@@ -60,7 +60,7 @@ function Contacto() {
         throw new Error(data.mensaje || 'Error al enviar el mensaje');
       }
 
-      toast.success(`Mensaje #${data.id} enviado. Te responderemos pronto!`);
+      toast.success(`Te responderemos pronto!`);
       setSubmitting(false);
       setFormData({ nombre: '', email: '', mensaje: '' });
     } catch (error) {

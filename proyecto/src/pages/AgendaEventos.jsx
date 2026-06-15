@@ -295,7 +295,6 @@ function AgendaEventos() {
                   <li>Se requiere 50% de anticipo para confirmar</li>
                   <li>Envío disponible en la zona metropolitana</li>
                   <li>Te contactaremos para confirmar detalles</li>
-                  <li>Garantía de frescura y calidad</li>
                 </ul>
                 <div className="agenda-contact">
                   <p>Teléfono: (04) 222-3333</p>
