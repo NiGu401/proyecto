@@ -12,6 +12,7 @@ import Registro from './pages/Registro'
 import Panel from './pages/Panel'
 import ProtectedRoute from './pages/ProtectedRoute'
 import Header from './componentes/Header'
+import Menu from './pages/Menu'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,13 +23,14 @@ function App() {
         <Header />
         <Routes>
           <Route path='/' element={<Inicio2/>}/>
-          
+
           <Route path='/postres' element={<Postres/>}/>
 
 
           <Route path='/agenda-eventos' element={<AgendaEventos/>}/>
 
           <Route path='/contacto' element={<Contacto/>}/>
+          <Route path='/menu' element={<Menu/>}/>
           <Route path='/admin-panel' element={
             <ProtectedRoute requireAdmin={true}>
               <AdminPanel/>
