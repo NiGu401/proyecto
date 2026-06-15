@@ -25,7 +25,6 @@ function Menu() {
   const navigate = useNavigate();
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [carrito, setCarrito] = useState([]);
   const [categorias, setCategorias] = useState({});
 
   useEffect(() => {
@@ -56,30 +55,20 @@ function Menu() {
   };
 
   const addToCart = (producto) => {
+    // Leer carrito actual
+    let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    
     const existente = carrito.find(item => item.id === producto.id);
     if (existente) {
-      setCarrito(carrito.map(item =>
+      carrito = carrito.map(item =>
         item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item
-      ));
+      );
     } else {
-      setCarrito([...carrito, { ...producto, cantidad: 1 }]);
+      carrito = [...carrito, { ...producto, cantidad: 1 }];
     }
+    
+    localStorage.setItem('carrito', JSON.stringify(carrito));
     toast.success(`${producto.nombre} agregado al carrito`);
-  };
-
-  const removeFromCart = (id) => {
-    setCarrito(carrito.filter(item => item.id !== id));
-    toast.info('Producto eliminado del carrito');
-  };
-
-  const updateCartQuantity = (id, cantidad) => {
-    if (cantidad === 0) {
-      removeFromCart(id);
-      return;
-    }
-    setCarrito(carrito.map(item =>
-      item.id === id ? { ...item, cantidad: cantidad } : item
-    ));
   };
 
   // Helper para convertir precio string a numero
@@ -88,9 +77,7 @@ function Menu() {
     const n = parseFloat(p);
     return isNaN(n) ? 0 : n;
   };
-  const formatPrecio = (p) => `$${precioNum(p).toFixed(2)}`;
-
-  const totalCarrito = carrito.reduce((total, item) => total + precioNum(item.precio) * item.cantidad, 0);
+  const formatPrecio = (p) => `${precioNum(p).toFixed(2)}Bs`;
 
   if (loading) {
     return (
@@ -191,7 +178,7 @@ function Menu() {
                         {producto.nombre}
                       </Card.Title>
                       <div className="mt-2">
-                        <span className="text-danger fw-bold fs-5">${formatPrecio(producto.precio)}</span>
+                        <span className="text-danger fw-bold fs-5">{formatPrecio(producto.precio)}</span>
                       </div>
                       <Button
                         variant="outline-danger"
@@ -214,55 +201,6 @@ function Menu() {
             </Row>
           </div>
         ))}
-
-        {/* Carrito flotante */}
-        {carrito.length > 0 && (
-          <div className="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 1050 }}>
-            <Card className="shadow-lg" style={{ width: '350px' }}>
-              <Card.Header className="bg-danger text-white">
-                <h5 className="mb-0">🛒 Carrito ({carrito.length} items)</h5>
-              </Card.Header>
-              <Card.Body style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                {carrito.map((item) => (
-                  <div key={item.id} className="d-flex justify-content-between align-items-center mb-2">
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <span style={{ fontWeight: '500' }}>{item.nombre}</span>
-                      <span className="text-muted ms-2">${formatPrecio(item.precio)}</span>
-                    </div>
-                    <div className="d-flex align-items-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline-secondary"
-                        onClick={() => updateCartQuantity(item.id, item.cantidad - 1)}
-                      >-</Button>
-                      <Form.Control
-                        type="number"
-                        value={item.cantidad}
-                        onChange={(e) => updateCartQuantity(item.id, parseInt(e.target.value))}
-                        style={{ width: '45px' }}
-                      />
-                      <Button
-                        size="sm"
-                        variant="outline-secondary"
-                        onClick={() => updateCartQuantity(item.id, item.cantidad + 1)}
-                      >+</Button>
-                      <span className="ms-2 fw-bold">${(precioNum(item.precio) * item.cantidad).toFixed(2)}</span>
-                    </div>
-                  </div>
-                ))}
-                <div className="mt-3 pt-3 border-top">
-                  <div className="d-flex justify-content-between">
-                    <strong>Total:</strong>
-                    <strong className="text-danger fs-5">${totalCarrito.toFixed(2)}</strong>
-                  </div>
-                  <Button className="mt-2 w-100" onClick={() => toast.info('¡Gracias por tu compra!')}>
-                    Comprar
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
-          </div>
-        )}
       </Container>
     </div>
   );

@@ -97,6 +97,25 @@ conexion.connect((err) => {
   `, (err) => {
     if (err) console.error("Error creando productos:", err.message);
   });
+
+  // Tabla de pagos
+  conexion.query(`
+    CREATE TABLE IF NOT EXISTS pagos (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      tipo_pago VARCHAR(20) NOT NULL DEFAULT 'mercado_pago',
+      monto DECIMAL(10,2) NOT NULL,
+      estado VARCHAR(20) DEFAULT 'pendiente',
+      id_presupuesto INT,
+      nombre VARCHAR(100),
+      email VARCHAR(100),
+      telefono VARCHAR(20),
+      detalles TEXT,
+      respuesta_mercado_pago JSON,
+      fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `, (err) => {
+    if (err) console.error("Error creando pagos:", err.message);
+  });
 });
 
 module.exports = conexion;

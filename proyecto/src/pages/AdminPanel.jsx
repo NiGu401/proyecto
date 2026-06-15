@@ -339,7 +339,7 @@ function AdminPanel() {
       <section className="admin-header">
         <Container>
           <h1 className="admin-title">Panel de Administración</h1>
-          <p className="admin-subtitle">Bienvenido, {usuario.nombre} ({usuario.rol_id === 1 ? 'Administrador' : 'Empleado'})</p>
+          <p className="admin-subtitle">Bienvenido, {usuario.nombre} ({usuario.rol_id === 1 ? 'Administrador' : 'Usuario'})</p>
         </Container>
       </section>
 

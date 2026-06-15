@@ -107,6 +107,14 @@
   }
 }
 
+/* ===== Reset for full-width carousel ===== */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 /* ===== LOGIN / REGISTRO ===== */
 .login-container {
   display: flex;
@@ -381,31 +389,86 @@
 }
 
 /* ===== Carousel Full Width ===== */
+.hero-banner {
+  height: 550px;
+  background: linear-gradient(135deg, #C21919 0%, #e24843 50%, #FFD700 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  margin-left: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.hero-carousel {
+  width: 100%;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
 .hero-carousel .carousel-inner {
   border-radius: 0;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 .hero-carousel .carousel-item {
   height: 550px;
   min-height: 550px;
+  width: 100% !important;
   transition: none;
 }
 
 .carousel-full-width {
-  width: 100%;
+  width: 100% !important;
   height: 550px;
   object-fit: cover;
   display: block;
-  transition: opacity 0.5s ease;
+  transition: opacity 2s ease;
 }
 
 /* Garantiza que siempre se vea alargada y cubra el contenedor */
 .hero-carousel .carousel-item img {
-  width: 100% !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
   height: 550px !important;
   object-fit: cover !important;
   object-position: center;
+  display: block;
+}
+
+/* Remove all Bootstrap carousel container constraints */
+.carousel-inner {
+  width: 100% !important;
+}
+
+.carousel-item {
+  width: 100% !important;
+}
+
+.carousel-item img {
+  width: 100vw !important;
+  max-width: none !important;
+  height: 550px !important;
+  object-fit: cover !important;
+  object-position: center;
+}
+
+/* Ensure the carousel wrapper doesn't constrain width */
+.carousel {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
 }
 
 /* Prevent transition size changes */

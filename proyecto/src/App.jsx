@@ -13,6 +13,7 @@ import Panel from './pages/Panel'
 import ProtectedRoute from './pages/ProtectedRoute'
 import Header from './componentes/Header'
 import Menu from './pages/Menu'
+import CarritoFlotante from './componentes/CarritoFlotante'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -41,6 +42,7 @@ function App() {
           <Route path='/panel' element={<Navigate to='/admin-panel' />} />
           <Route path='/dashboard' element={<Navigate to='/admin-panel' />} />
         </Routes>
+        <CarritoFlotante />
       </BrowserRouter>
     </>
   )

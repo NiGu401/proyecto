@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const reservaContactoRoutes = require("./routes/reservaContactoRoutes");
+const pagoRoutes = require("./routes/pagoRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -54,6 +55,7 @@ app.get("/", (req, res) => {
       auth: "/captcha, /login, /registro, /logout",
       reservas: "/api/reserva (POST), /api/reservas (GET)",
       contactos: "/api/contacto (POST), /api/contactos (GET)",
+      pagos: "/api/pago/crear (POST), /api/pagos (GET), /api/pago/manual (POST)",
     },
   });
 });
@@ -63,6 +65,9 @@ app.use(authRoutes);
 
 // Rutas de reservas y contacto (reservas: POST público, GET solo admin)
 app.use(reservaContactoRoutes);
+
+// Rutas de pago (públicas)
+app.use(pagoRoutes);
 
 // ==================== MANEJO DE ERRORES ====================
 app.use((err, req, res, next) => {
