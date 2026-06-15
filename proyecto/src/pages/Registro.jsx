@@ -15,7 +15,7 @@ function Registro() {
     correo: "",
     contrasena: "",
     confirmarContrasena: "",
-    rol_id: "2", // Por defecto Empleado
+    rol_id: "2", // Por defecto Usuario
   });
 
   const handleChange = (e) => {
@@ -207,7 +207,7 @@ function Registro() {
             onChange={handleChange}
             disabled={cargando}
           >
-            <option value="2">Empleado</option>
+            <option value="2">Usuario</option>
             <option value="1">Administrador</option>
           </select>
         </div>

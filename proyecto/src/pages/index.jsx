@@ -42,7 +42,7 @@ function Inicio2() {
     <div className="inicio2-container">
       {/* Banner Principal */}
       <section className="hero-banner">
-        <Carousel className="hero-carousel" prevLabel="" nextLabel="" pause="hover" interval={3000}>
+        <Carousel className="hero-carousel" prevLabel="" nextLabel="" pause="hover" interval={8000}>
             <Carousel.Item>
               <img
                 src="/Imagenes/carrucel1.jpg"
