@@ -78,7 +78,7 @@ function Header() {
               <Nav className="ms-auto d-flex flex-colum flex-lg-row">
                 <Nav.Link onClick={() => navigate('/')} className='px-3'>Inicio</Nav.Link>
                 <Nav.Link onClick={() => navigate('/menu')} className='px-3'>Menú</Nav.Link>
-                <Nav.Link onClick={() => navigate('/agenda-eventos')} className='px-3'>Agenda y Eventos</Nav.Link>
+                <Nav.Link onClick={() => navigate('/agenda-eventos')} className='px-3'>Tortas para Eventos</Nav.Link>
 
                 <Nav.Link onClick={() => navigate('/contacto')} className='px-3'>Contacto</Nav.Link>
                 {usuario && (

@@ -199,19 +199,6 @@ function Registro() {
           />
         </div>
 
-        <div className="input-group">
-          <span className="input-icon">Rol:</span>
-          <select
-            name="rol_id"
-            value={formData.rol_id}
-            onChange={handleChange}
-            disabled={cargando}
-          >
-            <option value="2">Usuario</option>
-            <option value="1">Administrador</option>
-          </select>
-        </div>
-
         <button type="submit" disabled={cargando}>
           {cargando ? "Registrando..." : "Registrarse"}
         </button>

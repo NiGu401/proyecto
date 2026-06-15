@@ -140,7 +140,7 @@ function AgendaEventos() {
       <ToastContainer />
       <section className="agenda-header">
         <div className="agenda-hero-overlay">
-          <h1 className="agenda-title">Agenda y Eventos</h1>
+          <h1 className="agenda-title">Tortas para Eventos</h1>
           <p className="agenda-subtitle">Reserva tu tarta personalizada y haz de tu evento algo inolvidable</p>
         </div>
       </section>
