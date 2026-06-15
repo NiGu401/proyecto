@@ -23,6 +23,7 @@ function CarritoFlotante({ productosDisponibles }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loadingUpload, setLoadingUpload] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const carritoRef = useRef(carrito);
 
@@ -150,11 +151,11 @@ function CarritoFlotante({ productosDisponibles }) {
       const data = await response.json();
 
       if (response.ok) {
+        setShowCheckout(false);
         setPaymentDone(true);
         setCarrito([]);
         localStorage.removeItem('carrito');
-        setShowCheckout(false);
-        toast.success('🎉 ¡Gracias por tu compra! Recibirás un correo con los detalles.');
+        setShowSuccessModal(true);
       } else {
         toast.error('❌ Error al subir el comprobante: ' + data.mensaje);
       }
@@ -501,6 +502,35 @@ function CarritoFlotante({ productosDisponibles }) {
               {loadingUpload ? '⏳ Subiendo...' : '✅ Confirmar Pago'}
             </Button>
           )}
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de confirmación exitosa */}
+      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} size="md" centered className="shadow-lg">
+        <Modal.Header closeButton style={{ background: '#198754', color: 'white' }}>
+          <Modal.Title>✅ Pago Registrado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center py-4">
+          <div className="mb-3">
+            <span style={{ fontSize: '3rem' }}>📧</span>
+          </div>
+          <h4 className="text-success mb-3">¡Gracias por tu compra!</h4>
+          <p className="text-muted fs-5">
+            Te avisaremos por correo si tu pago fue registrado correctamente.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="danger"
+            onClick={() => {
+              setShowSuccessModal(false);
+              setShowCheckout(false);
+              setCheckoutStep(1);
+              setPaymentDone(false);
+            }}
+          >
+            Volver
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

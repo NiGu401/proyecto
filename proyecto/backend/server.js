@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://192.168.250.92:5173"],
+    origin: ["http://localhost:5173", "http://192.168.250.92:5173", "http://177.222.116.3:5173", "http://177.222.116.3:3001", "http://localhost:3001", "*"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })

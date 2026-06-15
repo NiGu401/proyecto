@@ -9,7 +9,7 @@ export default defineConfig({
     strictSSL: false,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'http://0.0.0.0:3001',
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -21,7 +21,7 @@ export default defineConfig({
         },
       },
       '/login': {
-        target: 'http://localhost:3001',
+        target: 'http://0.0.0.0:3001',
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -33,7 +33,7 @@ export default defineConfig({
         },
       },
       '/logout': {
-        target: 'http://localhost:3001',
+        target: 'http://0.0.0.0:3001',
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -45,7 +45,7 @@ export default defineConfig({
         },
       },
       '/captcha': {
-        target: 'http://localhost:3001',
+        target: 'http://0.0.0.0:3001',
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -57,7 +57,7 @@ export default defineConfig({
         },
       },
       '/registro': {
-        target: 'http://localhost:3001',
+        target: 'http://0.0.0.0:3001',
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
