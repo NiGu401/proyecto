@@ -68,6 +68,7 @@ function Menu() {
     }
     
     localStorage.setItem('carrito', JSON.stringify(carrito));
+    window.dispatchEvent(new Event('cartUpdated'));
     toast.success(`${producto.nombre} agregado al carrito`);
   };
 

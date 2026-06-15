@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Container, Card, Button, Form, Modal, Alert } from 'react-bootstrap';
+import { useState, useEffect, useRef } from 'react';
+import { Container, Card, Button, Form, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
 const API_URL = '';
@@ -9,21 +9,25 @@ function CarritoFlotante({ productosDisponibles }) {
   const [showCartForm, setShowCartForm] = useState(false);
   const [cartVisible, setCartVisible] = useState(true);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(1);
-  const [loadingPayment, setLoadingPayment] = useState(false);
+  const [paymentDone, setPaymentDone] = useState(false);
   const [paymentData, setPaymentData] = useState({
     nombre: '',
     email: '',
     telefono: '',
-    metodoPago: 'mercado_pago',
   });
   const [paymentErrors, setPaymentErrors] = useState({
     nombre: false,
     email: false,
   });
 
-  // Cargar carrito del localStorage
+  const carritoRef = useRef(carrito);
+
+  useEffect(() => {
+    carritoRef.current = carrito;
+  }, [carrito]);
+
+  // Cargar carrito del localStorage al montar
   useEffect(() => {
     const saved = localStorage.getItem('carrito');
     if (saved) {
@@ -36,18 +40,23 @@ function CarritoFlotante({ productosDisponibles }) {
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
 
-  // Agregar producto al carrito
-  const addToCart = (producto) => {
-    const existente = carrito.find(item => item.id === producto.id);
-    if (existente) {
-      setCarrito(carrito.map(item =>
-        item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item
-      ));
-    } else {
-      setCarrito([...carrito, { ...producto, cantidad: 1 }]);
-    }
-    toast.success(`${producto.nombre} agregado al carrito`);
-  };
+  // Escuchar cambios en el carrito desde otras pestañas o componentes
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      const saved = localStorage.getItem('carrito');
+      if (saved) {
+        setCarrito(JSON.parse(saved));
+      }
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener('storage', handleCartUpdate);
+
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener('storage', handleCartUpdate);
+    };
+  }, []);
 
   // Remover del carrito
   const removeFromCart = (id) => {
@@ -94,94 +103,16 @@ function CarritoFlotante({ productosDisponibles }) {
     }
     setShowCheckout(true);
     setCheckoutStep(1);
+    setPaymentDone(false);
     setPaymentErrors({ nombre: false, email: false });
   };
 
-  // Procesar pago MercadoPago
-  const procesarPago = async () => {
-    if (!paymentData.nombre || !paymentData.email) {
-      toast.error('❌ Completá todos los campos');
-      return;
-    }
-
-    setLoadingPayment(true);
-
-    try {
-      const response = await fetch(`${API_URL}/api/pago/crear`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: carrito.map(item => ({
-            nombre: item.nombre,
-            precio: item.precio,
-            cantidad: item.cantidad,
-          })),
-          nombre: paymentData.nombre,
-          email: paymentData.email,
-          telefono: paymentData.telefono,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.urlPago) {
-        setShowCheckout(false);
-        setShowPayment(true);
-        window.open(data.urlPago, '_blank');
-        toast.success('✅ Redirigiendo al pago...');
-      } else {
-        throw new Error('No se recibió la URL de pago');
-      }
-    } catch (error) {
-      console.error('Error al procesar el pago:', error);
-      toast.error('❌ Error al crear el pago: ' + error.message);
-    } finally {
-      setLoadingPayment(false);
-    }
-  };
-
-  // Procesar pago manual
-  const procesarPagoManual = async () => {
-    if (!paymentData.nombre || !paymentData.email) {
-      toast.error('❌ Completá todos los campos');
-      return;
-    }
-
-    setLoadingPayment(true);
-
-    try {
-      const response = await fetch(`${API_URL}/api/pago/manual`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: carrito.map(item => ({
-            nombre: item.nombre,
-            precio: item.precio,
-            cantidad: item.cantidad,
-          })),
-          nombre: paymentData.nombre,
-          email: paymentData.email,
-          telefono: paymentData.telefono,
-          metodo_pago: paymentData.metodoPago,
-          total: totalCarrito.toFixed(2),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.id) {
-        setShowCheckout(false);
-        toast.success('✅ ' + data.mensaje);
-        setCarrito([]);
-      } else {
-        throw new Error(data.mensaje || 'Error al registrar el pago');
-      }
-    } catch (error) {
-      console.error('Error al procesar el pago:', error);
-      toast.error('❌ Error: ' + error.message);
-    } finally {
-      setLoadingPayment(false);
-    }
+  // Procesar pago con QR
+  const confirmarPago = () => {
+    setPaymentDone(true);
+    setCarrito([]);
+    setShowCheckout(false);
+    toast.success('🎉 ¡Gracias por tu compra! Recibirás un correo con los detalles.');
   };
 
   // Helper precio
@@ -344,12 +275,32 @@ function CarritoFlotante({ productosDisponibles }) {
       </div>
 
       {/* Modal Checkout */}
-      <Modal show={showCheckout} onHide={() => setShowCheckout(false)} size="lg" centered className="shadow-lg">
+      <Modal show={showCheckout} onHide={() => { setShowCheckout(false); setCheckoutStep(1); setPaymentDone(false); }} size="lg" centered className="shadow-lg">
         <Modal.Header closeButton style={{ background: '#C21919', color: 'white' }}>
-          <Modal.Title>{checkoutStep === 1 ? '🛍️ Finalizar Compra' : '💳 Pago'}</Modal.Title>
+          <Modal.Title>{
+            paymentDone ? '✅ Pago Confirmado' : 
+            checkoutStep === 1 ? '🛍️ Finalizar Compra' : '💳 Pagar con QR'
+          }</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {checkoutStep === 1 ? (
+          {paymentDone ? (
+            <>
+              <div className="text-center py-4">
+                <div className="mb-3">
+                  <span style={{ fontSize: '3rem' }}>✅</span>
+                </div>
+                <h4 className="text-success mb-3">¡Gracias por tu compra!</h4>
+                <p className="text-muted">Recibirás un correo con los detalles de tu pedido.</p>
+                <Button
+                  variant="danger"
+                  onClick={() => { setShowCheckout(false); setCheckoutStep(1); setPaymentDone(false); }}
+                  className="mt-3"
+                >
+                  Volver al inicio
+                </Button>
+              </div>
+            </>
+          ) : checkoutStep === 1 ? (
             <>
               <h5 className="mb-3">Resumen del pedido</h5>
               <div className="table-responsive mb-3">
@@ -422,30 +373,36 @@ function CarritoFlotante({ productosDisponibles }) {
             </>
           ) : (
             <>
-              <Alert variant="success">
-                ✅ Redirigiendo a MercadoPago para completar el pago.
-              </Alert>
-              <p className="text-muted">
-                Serás redirigido a MercadoPago para finalizar la compra. Una vez completado el pago, recibirás un correo con los datos.
-              </p>
-              <div className="text-center">
-                <img
-                  src="https://www.mercadopago.com.ar/assets/images/checkout/checkout-logo.png"
-                  alt="MercadoPago"
-                  style={{ maxWidth: '200px' }}
-                />
+              <h5 className="mb-3">📱 Pagá con QR</h5>
+              <p className="text-muted mb-4">Escaneá el siguiente código QR para completar tu pago:</p>
+              <div className="text-center mb-4">
+                <div className="p-4 border rounded" style={{ background: '#fff', maxWidth: '300px', margin: '0 auto' }}>
+                  <img src="/Imagenes/qr-pago.png" alt="QR para pagar" className="img-fluid" style={{ maxWidth: '250px' }} />
+                </div>
               </div>
+              <div className="text-center">
+                <p className="text-danger fw-bold fs-4">Total a pagar: {formatPrecio(totalCarrito)}</p>
+              </div>
+              <p className="text-muted text-center mt-3">Una vez realizado el pago, hacé clic en «Pagué» para confirmar tu pedido.</p>
             </>
           )}
         </Modal.Body>
         <Modal.Footer>
-          {checkoutStep === 1 ? (
+          {paymentDone ? (
+            <Button
+              variant="danger"
+              onClick={() => { setShowCheckout(false); setCheckoutStep(1); setPaymentDone(false); }}
+            >
+              Volver al inicio
+            </Button>
+          ) : checkoutStep === 1 ? (
             <>
               <Button
                 variant="secondary"
                 onClick={() => {
                   setShowCheckout(false);
                   setCheckoutStep(1);
+                  setPaymentDone(false);
                 }}
               >
                 Cancelar
@@ -458,60 +415,19 @@ function CarritoFlotante({ productosDisponibles }) {
                     return;
                   }
                   setCheckoutStep(2);
-                  setTimeout(() => {
-                    if (paymentData.metodoPago === 'mercado_pago') {
-                      procesarPago();
-                    } else {
-                      procesarPagoManual();
-                    }
-                  }, 100);
                 }}
-                disabled={loadingPayment}
               >
-                {loadingPayment ? '⏳ Procesando...' : 'Continuar al Pago'}
+                Continuar al Pago
               </Button>
             </>
           ) : (
-            <div className="w-100 text-center">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowCheckout(false);
-                  setCheckoutStep(1);
-                  setPaymentData({ nombre: '', email: '', telefono: '', metodoPago: 'mercado_pago' });
-                }}
-              >
-                Volver
-              </Button>
-            </div>
+            <Button
+              variant="success"
+              onClick={confirmarPago}
+            >
+              ✅ Pagué y confirmar
+            </Button>
           )}
-        </Modal.Footer>
-      </Modal>
-
-      {/* Modal de confirmación */}
-      <Modal show={showPayment} onHide={() => setShowPayment(false)} size="md" centered>
-        <Modal.Header closeButton style={{ background: '#28a745', color: 'white' }}>
-          <Modal.Title>✅ Procesando Pago</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="text-center py-5">
-          <div className="spinner-border text-danger" style={{ width: '3rem', height: '3rem' }} role="status">
-            <span className="visually-hidden">Cargando</span>
-          </div>
-          <h5 className="mt-3">Redirigiendo a MercadoPago...</h5>
-          <p className="text-muted">Completá el pago y vuelve para confirmar tu pedido.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="success"
-            onClick={() => {
-              setShowPayment(false);
-              setCarrito([]);
-              setPaymentData({ nombre: '', email: '', telefono: '', metodoPago: 'mercado_pago' });
-              toast.success('🎉 ¡Gracias por tu compra! Recibirás un correo con los detalles.');
-            }}
-          >
-            ✅ Pagué y volveré
-          </Button>
         </Modal.Footer>
       </Modal>
     </>

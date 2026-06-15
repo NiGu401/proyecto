@@ -89,9 +89,6 @@ function Header() {
                       </Nav.Link>
                       {showDropdown && (
                         <div className="dropdown-menu">
-                          <div className="dropdown-item" onClick={() => { navigate('/postres'); setShowDropdown(false); }}>
-                            Postres
-                          </div>
                           {isAdmin && (
                             <div className="dropdown-item" onClick={() => { navigate('/admin-panel'); setShowDropdown(false); }}>
                               Panel Admin
