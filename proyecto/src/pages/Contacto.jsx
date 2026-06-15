@@ -70,8 +70,8 @@ function Contacto() {
   };
 
   const contactInfo = [
-    { label: 'Ubicación', value: 'Av. Principal #123, Centro, Ciudad' },
-    { label: 'Teléfono', value: '(04) 222-3333' },
+    { label: 'Ubicación', value: '98 C. Juan Mendoza, La Paz' },
+    { label: 'Teléfono', value: '73719256' },
     { label: 'Email', value: 'info@instantesdulces.com' },
     { label: 'Horario', value: 'Lun-Sáb: 8am-8pm | Dom: 9am-5pm' },
   ];

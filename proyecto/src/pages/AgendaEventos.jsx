@@ -290,15 +290,13 @@ function AgendaEventos() {
               <Card.Body>
                 <h4 className="agenda-info-title">ℹ️ Información Importante</h4>
                 <ul className="agenda-info-list">
-                  <li>Reservas con mínimo 48 horas de anticipación</li>
                   <li>Diseño personalizado sujeto a disponibilidad</li>
                   <li>Se requiere 50% de anticipo para confirmar</li>
-                  <li>Envío disponible en la zona metropolitana</li>
+                  <li>Envío disponible en la ciudad de La Paz</li>
                   <li>Te contactaremos para confirmar detalles</li>
                 </ul>
                 <div className="agenda-contact">
-                  <p>Teléfono: (04) 222-3333</p>
-                  <p>Email: reservas@instantesdulces.com</p>
+                  <p>Teléfono: 73719256</p>
                 </div>
               </Card.Body>
             </Card>
