@@ -298,6 +298,39 @@ router.post("/api/producto-imagen/:id", (req, res) => {
   });
 });
 
+// Ruta para eliminar imagen de un producto (DELETE: /api/producto-imagen/:id)
+router.delete("/api/producto-imagen/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.query("SELECT imagen FROM productos WHERE id = ?", [id], (errSelect, rows) => {
+    if (errSelect) {
+      return res.status(500).json({ mensaje: "Error al verificar imagen actual" });
+    }
+    if (!rows[0] || !rows[0].imagen) {
+      return res.status(400).json({ mensaje: "❌ El producto no tiene imagen asignada" });
+    }
+
+    const imagenPath = rows[0].imagen;
+
+    // Eliminar archivo de la carpeta uploads/productos
+    const filePath = path.join(imagenesDir, imagenPath);
+    fs.unlink(filePath, (unlinkErr) => {
+      if (unlinkErr) {
+        console.log("No se pudo eliminar archivo de imagen:", unlinkErr.message);
+      }
+    });
+
+    // Actualizar la imagen en la DB a NULL
+    db.query("UPDATE productos SET imagen = NULL WHERE id = ?", [id], (error) => {
+      if (error) {
+        console.error("Error al actualizar imagen en DB:", error);
+        return res.status(500).json({ mensaje: "Error al eliminar imagen de la base de datos" });
+      }
+      res.json({ mensaje: "✅ Imagen eliminada correctamente" });
+    });
+  });
+});
+
 router.post("/api/producto", (req, res) => {
   const { nombre, precio, categoria, activo, imagen } = req.body;
   const sql = `INSERT INTO productos (nombre, precio, categoria, activo, imagen) VALUES (?, ?, ?, ?, ?)`;

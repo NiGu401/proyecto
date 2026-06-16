@@ -145,19 +145,55 @@ function Menu() {
                     }}
                   >
                     {/* Imagen del producto */}
-                    <div style={{ height: '180px', overflow: 'hidden', position: 'relative' }}>
+                    <div style={{
+                      height: '180px',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      background: producto.imagen ? 'none' : 'linear-gradient(135deg, #f8f8f8, #e8e8e8)',
+                    }}>
                       <Card.Img
                         variant="top"
-                        src={
-                          producto.imagen
-                            ? `/uploads/productos/${producto.imagen}`
-                            : categoryImages[categoria] || '/Imagenes/default.jpg'
-                        }
+                        src={producto.imagen ? `/uploads/productos/${producto.imagen}` : ''}
                         style={{
                           width: '100%',
                           height: '100%',
                           objectFit: 'cover',
                           transition: 'transform 0.3s ease',
+                          opacity: producto.imagen ? 1 : 0,
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.style.opacity = 0;
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
+                      />
+                      {!producto.imagen && (
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '3rem',
+                          color: '#C21919',
+                        }}>
+                          🎂
+                        </div>
+                      )}
+                      <Card.Img
+                        variant="top"
+                        src={producto.imagen ? `/uploads/productos/${producto.imagen}` : ''}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          transition: 'transform 0.3s ease',
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.src = '';
                         }}
                         onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}

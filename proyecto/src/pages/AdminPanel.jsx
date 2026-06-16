@@ -323,17 +323,31 @@ function AdminPanel() {
     activo: true,
   });
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file || !editingId) return;
+  const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
+  const [subiendoImagen, setSubiendoImagen] = useState(false);
 
-    const formData = new FormData();
-    formData.append('imagen', file);
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImagenSeleccionada(file);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    const file = imagenSeleccionada;
+    if (!file || !editingId) {
+      toast.warning('Selecciona una imagen primero');
+      return;
+    }
+
+    setSubiendoImagen(true);
+    const formDataImg = new FormData();
+    formDataImg.append('imagen', file);
 
     try {
-      const response = await fetch(`${API_URL}/api/producto-imagen/${editingId}`, {
+      const response = await fetch(`/api/producto-imagen/${editingId}`, {
         method: 'POST',
-        body: formData,
+        body: formDataImg,
       });
 
       const data = await response.json();
@@ -343,10 +357,64 @@ function AdminPanel() {
       }
 
       toast.success('✅ Imagen actualizada correctamente');
+      setImagenSeleccionada(null);
       fetchProductos();
     } catch (error) {
       toast.error('❌ Error al subir imagen: ' + error.message);
+    } finally {
+      setSubiendoImagen(false);
     }
+  };
+
+  const handleImageRemove = async () => {
+    if (!editingId) return;
+
+    try {
+      const response = await fetch(`/api/producto-imagen/${editingId}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.mensaje || 'Error al eliminar imagen');
+      }
+
+      toast.success('✅ Imagen eliminada correctamente');
+      fetchProductos();
+    } catch (error) {
+      toast.error('❌ Error al eliminar imagen: ' + error.message);
+    }
+  };
+
+  const getProductImage = () => {
+    if (!editingId) return null;
+    const product = productos.find(p => p.id === editingId);
+    return product?.imagen || null;
+  };
+
+  const getProductNombre = () => {
+    if (!editingId) return formData.nombre;
+    const product = productos.find(p => p.id === editingId);
+    return product?.nombre || '';
+  };
+
+  const getProductPrecio = () => {
+    if (!editingId) return formData.precio;
+    const product = productos.find(p => p.id === editingId);
+    return product?.precio.toString() || '';
+  };
+
+  const getProductCategoria = () => {
+    if (!editingId) return formData.categoria || 'Pasteles';
+    const product = productos.find(p => p.id === editingId);
+    return product?.categoria || 'Pasteles';
+  };
+
+  const getProductActivo = () => {
+    if (!editingId) return formData.activo;
+    const product = productos.find(p => p.id === editingId);
+    return product?.activo === 1 || product?.activo === true;
   };
 
   if (!usuario) return null;
@@ -426,22 +494,11 @@ function AdminPanel() {
                     {productos.map((product) => (
                       <tr key={product.id} style={{ opacity: (product.activo === 1 || product.activo === true) ? 1 : 0.5 }}>
                         <td>
-                          <img
-                            src={
-                              product.imagen
-                                ? `/uploads/productos/${product.imagen}`
-                                : '/Imagenes/default.jpg'
-                            }
-                            alt={product.nombre}
-                            style={{
-                              width: '50px',
-                              height: '50px',
-                              objectFit: 'cover',
-                              borderRadius: '5px',
-                              border: '1px solid #ddd'
-                            }}
-                            onError={(e) => { e.target.src = '/Imagenes/default.jpg'; }}
-                          />
+                          {product.imagen ? (
+                            <span style={{ fontSize: '12px', color: '#555' }}>📷 {product.imagen}</span>
+                          ) : (
+                            <span style={{ fontSize: '12px', color: '#999' }}>Sin imagen</span>
+                          )}
                         </td>
                         <td>#{product.id}</td>
                         <td>{product.nombre}</td>
@@ -683,7 +740,7 @@ function AdminPanel() {
               <Form.Label>Nombre del Producto</Form.Label>
               <Form.Control
                 type="text"
-                value={formData.nombre}
+                value={getProductNombre()}
                 onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                 required
               />
@@ -694,7 +751,7 @@ function AdminPanel() {
                 type="number"
                 step="0.01"
                 min="0"
-                value={formData.precio}
+                value={getProductPrecio()}
                 onChange={(e) => setFormData({ ...formData, precio: e.target.value })}
                 required
               />
@@ -703,7 +760,7 @@ function AdminPanel() {
               <Form.Label>Categoría</Form.Label>
               <Form.Control
                 as="select"
-                value={formData.categoria || 'Pasteles'}
+                value={getProductCategoria()}
                 onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
               >
                 <option value="Pasteles">Pasteles</option>
@@ -716,43 +773,88 @@ function AdminPanel() {
               <Form.Check
                 label="Producto Activo"
                 type="checkbox"
-                checked={formData.activo}
+                checked={getProductActivo()}
                 onChange={(e) => setFormData({ ...formData, activo: e.target.checked })}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="productImage">
               <Form.Label>Imagen del Producto</Form.Label>
-              <div className="d-flex align-items-center gap-2">
-                {editingId && productos.find(p => p.id === editingId)?.imagen && (
-                  <img
-                    src={`/uploads/productos/${productos.find(p => p.id === editingId).imagen}`}
-                    alt="Imagen actual"
-                    style={{
-                      width: '100px',
-                      height: '100px',
-                      objectFit: 'cover',
-                      borderRadius: '5px',
-                      border: '1px solid #ddd'
-                    }}
-                    className="me-2"
-                  />
+              <div className="mb-2">
+                {getProductImage() && (
+                  <div className="mb-2">
+                    <img
+                      src={`/uploads/productos/${getProductImage()}`}
+                      alt="Imagen actual"
+                      onError={() => {}}
+                      style={{
+                        width: '150px',
+                        height: '150px',
+                        objectFit: 'cover',
+                        borderRadius: '8px',
+                        border: '2px solid #ddd'
+                      }}
+                    />
+                    <br />
+                    <small className="text-muted">Archivo actual: {getProductImage()}</small>
+                    <Button variant="danger" size="sm" onClick={handleImageRemove} className="ms-2" disabled={subiendoImagen}>
+                      🗑️ Eliminar imagen
+                    </Button>
+                  </div>
                 )}
-                <input
-                  type="file"
-                  accept="image/jpeg, image/png, image/jpg, image/webp"
-                  onChange={(e) => handleImageUpload(e)}
-                />
+                {imagenSeleccionada && (
+                  <div className="mb-2">
+                    <img
+                      src={URL.createObjectURL(imagenSeleccionada)}
+                      alt="Preview nueva imagen"
+                      style={{
+                        width: '150px',
+                        height: '150px',
+                        objectFit: 'cover',
+                        borderRadius: '8px',
+                        border: '2px solid #007bff'
+                      }}
+                    />
+                    <br />
+                    <small className="text-primary">Nueva imagen: {imagenSeleccionada.name}</small>
+                  </div>
+                )}
+                <div className="d-flex gap-2 mt-2">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept="image/jpeg, image/png, image/jpg, image/webp"
+                    onChange={handleImageSelect}
+                    style={{ display: 'none' }}
+                  />
+                  <Button
+                    variant="secondary"
+                    onClick={() => document.getElementById('fileInput').click()}
+                    disabled={subiendoImagen}
+                  >
+                    📁 Seleccionar Imagen
+                  </Button>
+                  <Button
+                    variant="success"
+                    onClick={handleImageUpload}
+                    disabled={!imagenSeleccionada || subiendoImagen}
+                  >
+                    {subiendoImagen ? '⏳ Subiendo...' : '📤 Subir Imagen'}
+                  </Button>
+                </div>
+                <Form.Text className="text-muted d-block mt-1">JPG, PNG, WEBP (max 5MB)</Form.Text>
               </div>
-              <Form.Text className="text-muted">JPG, PNG, WEBP (max 5MB)</Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <Button variant="secondary" onClick={() => {
+            setShowModal(false);
+            setImagenSeleccionada(null);
+          }}>
             Cancelar
           </Button>
           <Button variant="danger" onClick={handleSave}>
-            Guardar
+            Guardar Cambios
           </Button>
         </Modal.Footer>
       </Modal>
