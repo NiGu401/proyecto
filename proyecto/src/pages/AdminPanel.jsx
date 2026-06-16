@@ -323,6 +323,32 @@ function AdminPanel() {
     activo: true,
   });
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !editingId) return;
+
+    const formData = new FormData();
+    formData.append('imagen', file);
+
+    try {
+      const response = await fetch(`${API_URL}/api/producto-imagen/${editingId}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.mensaje || 'Error al subir imagen');
+      }
+
+      toast.success('✅ Imagen actualizada correctamente');
+      fetchProductos();
+    } catch (error) {
+      toast.error('❌ Error al subir imagen: ' + error.message);
+    }
+  };
+
   if (!usuario) return null;
 
   const reservaStatusLabels = {
@@ -388,6 +414,7 @@ function AdminPanel() {
                   <thead>
                     <tr>
                       <th>ID</th>
+                      <th>Imagen</th>
                       <th>Nombre</th>
                       <th>Precio</th>
                       <th>Categoría</th>
@@ -398,6 +425,24 @@ function AdminPanel() {
                   <tbody>
                     {productos.map((product) => (
                       <tr key={product.id} style={{ opacity: (product.activo === 1 || product.activo === true) ? 1 : 0.5 }}>
+                        <td>
+                          <img
+                            src={
+                              product.imagen
+                                ? `/uploads/productos/${product.imagen}`
+                                : '/Imagenes/default.jpg'
+                            }
+                            alt={product.nombre}
+                            style={{
+                              width: '50px',
+                              height: '50px',
+                              objectFit: 'cover',
+                              borderRadius: '5px',
+                              border: '1px solid #ddd'
+                            }}
+                            onError={(e) => { e.target.src = '/Imagenes/default.jpg'; }}
+                          />
+                        </td>
                         <td>#{product.id}</td>
                         <td>{product.nombre}</td>
                         <td>Bs {parseFloat(product.precio).toFixed(2)}</td>
@@ -674,6 +719,31 @@ function AdminPanel() {
                 checked={formData.activo}
                 onChange={(e) => setFormData({ ...formData, activo: e.target.checked })}
               />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="productImage">
+              <Form.Label>Imagen del Producto</Form.Label>
+              <div className="d-flex align-items-center gap-2">
+                {editingId && productos.find(p => p.id === editingId)?.imagen && (
+                  <img
+                    src={`/uploads/productos/${productos.find(p => p.id === editingId).imagen}`}
+                    alt="Imagen actual"
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '5px',
+                      border: '1px solid #ddd'
+                    }}
+                    className="me-2"
+                  />
+                )}
+                <input
+                  type="file"
+                  accept="image/jpeg, image/png, image/jpg, image/webp"
+                  onChange={(e) => handleImageUpload(e)}
+                />
+              </div>
+              <Form.Text className="text-muted">JPG, PNG, WEBP (max 5MB)</Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>

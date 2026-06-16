@@ -150,7 +150,7 @@ function Menu() {
                         variant="top"
                         src={
                           producto.imagen
-                            ? `http://localhost:3001/${producto.imagen}`
+                            ? `/uploads/productos/${producto.imagen}`
                             : categoryImages[categoria] || '/Imagenes/default.jpg'
                         }
                         style={{
